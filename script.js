@@ -19,7 +19,7 @@ function player(turn,AI)
 
 }
 function playIndividual()
-{   
+{
     PNUM=$("#numselection option:selected").val()
     $('#IndividualSelectpage').fadeIn(1000)
     $("#Mainpage").hide()
@@ -61,7 +61,7 @@ function teamSelection()
             $("#p4choice p").html("Computer2")
         }
     if(CNUM===3)
-        {   
+        {
             $("#p2choice p").html("Computer1")
             $("#p3choice p").html("Computer2")
             $("#p4choice p").html("Computer3")
@@ -89,7 +89,7 @@ function setup()
     {
         if(players[i].team===1)
         {redteams.push(players[i])}
-        else 
+        else
         {blueteams.push(players[i])}
     }
     for(var i=0;i<redteams.length;++i)
@@ -105,13 +105,14 @@ function setup()
 
 }
 function startgame()
-{   
+{
     $('#Gamepage').show()
     $('#IndividualSelectpage').hide()
     $('#TeamCheckpage').hide()
     $("header").hide()
     drawboard()
-   
+    runGame(players,redteams,blueteams,isTeam)
+
 }
 
 function drawboard()
@@ -119,8 +120,8 @@ function drawboard()
 var ctx=document.getElementById("board").getContext('2d')
 
     var canvas=new fabric.Canvas("board")
-    
-    
+
+
     var board=new fabric.Image(document.getElementById("boardimg"),{
         left:0,top:0,
         lockMovementX: true, lockMovementY: true,
@@ -130,7 +131,7 @@ var ctx=document.getElementById("board").getContext('2d')
 
     })
     canvas.setBackgroundImage(board.scale(0.6))
-    
+
     var p=new fabric.Image(document.getElementById("playerimg"),{
         left:500,top:10,width:300,height:500,
         lockMovementX: true, lockMovementY: true,
@@ -139,20 +140,13 @@ var ctx=document.getElementById("board").getContext('2d')
         hoverCursor: "pointer"
 
     })
-    
+
     canvas.add(p.scale(0.2))
 
-  
-//    $("#boardside").append("<div id='testbtn'> TEST </div>").css({"cursor":"pointer","position":"absolute","top":"100px","right":"100px"})
-//    
-//    $("#testbtn").click(function(){
-//         p.animate('left', "400");
-//        p.animate("top","200",{ onChange: canvas.renderAll.bind(canvas),duration:500})
-//    })
 }
+function runGame(players,red,blue,team)
+{
 
 
 
-
-
-
+}
