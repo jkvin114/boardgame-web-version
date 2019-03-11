@@ -9,15 +9,7 @@ var isTeam=false;
 var players=[];
 var redteams=[]
 var blueteams=[]
-function player(turn,AI)
-{
-    this.AI=AI
-    this.turn=turn
-    this.name=""
-    this.character=0
-    this.team=true   //true when readteam
 
-}
 function playIndividual()
 {
     PNUM=$("#numselection option:selected").val()
@@ -39,7 +31,7 @@ function addPlayer()
 {
     for(var i=0;i<PNUM;++i)
     {
-        players.push(new player(i,false))
+        players.push(new Bird(i,false))
     }
 }
 
@@ -49,7 +41,7 @@ function teamSelection()
     CNUM=4-PNUM
     for(var i=PNUM;i<4;++i)
     {
-        players.push(new player(i,true))
+        players.push(new Bird(i,true))
     }
     if(CNUM===1)
         {
@@ -144,9 +136,56 @@ var ctx=document.getElementById("board").getContext('2d')
     canvas.add(p.scale(0.2))
 
 }
+ //   1. dice
+ //  2.projectile
+ //  3.creed w
+ //   4.cooltime,effect cooldown
+ //   5.obstacle
+ //   6.lastmoneycooldown
+ //   7.durcooldown
+ //    8.useskill
+ //    9.etc cooldown
 function runGame(players,red,blue,team)
 {
+  var turn=0;
+  var END=false
+  while(!END)
+    {
+      var obs= -1;
+
+      for(var p of players)
+      {
+        if(p.effects[2]<=0)
+        {
+          var dice=Math.floor(Math.random()*6)+1;
+          if(p.effects[0]>0) {dice-=2}
+          if(p.effects[0]>0) {dice+=2}
+          END=p.move(dice)
+          if(END) {break;}
+        }
+        else {
+          alert("stun")
+        }
+
+        p.coolDown1()
+
+        //obstacle
+
+        p.coolDown2()
+
+        //skill
+        for(val i=0;i<4;++i)
+        {
+          val skill=0
+          if(p.effects[3]>0){alert("no skill!"); break;}
+          if(skill===2 && p.level<2){continue;}
+          if(skill===3 && p.level<3){continue;}
 
 
+        }
+        p.coolDown3()
+
+      }
+    }
 
 }
