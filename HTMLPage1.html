@@ -1,0 +1,195 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+    
+    
+
+
+<style>
+
+#title{ 
+    
+    
+    
+    
+    
+	color:dodgerblue;
+	border:2px solid DodgerBlue;
+    font-size: 5vw;
+    text-align: center;
+}
+#playbtn{
+    background-color: palegreen;
+    font-size: 3vw;
+    color:black;
+    display: inline-block;
+    padding: 2vw 5vw;
+    border-radius: 10%;
+
+
+
+}
+#choicecontainer{
+    display: grid;
+    grid-template-columns: auto auto;
+    background-color: #2196F3;
+    
+    }
+    #choicecontainer div{
+        border: 1px solid rgba(0, 0, 0, 0.8);
+        padding: 15px;
+        font-size: 15px;
+        text-align: center;
+    }
+    #redteam{
+        display: grid;
+        grid-template-columns: auto auto auto;
+        background-color:lightcoral;
+        
+    }    
+    #blueteam{
+        display: grid;
+        grid-template-columns: auto auto auto;
+        background-color:cornflowerblue;
+        
+    }   
+    #TeamCheckpage h2{
+        text-align:center   
+    }
+body
+{
+background: #87e0fd; /* Old browsers */
+background: -moz-linear-gradient(top, #87e0fd 0%, #53cbf1 40%, #05abe0 100%); /* FF3.6-15 */
+background: -webkit-linear-gradient(top, #87e0fd 0%,#53cbf1 40%,#05abe0 100%); /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(to bottom, #87e0fd 0%,#53cbf1 40%,#05abe0 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#87e0fd', endColorstr='#05abe0',GradientType=0 ); /* IE6-9 */
+}
+    #Mainpage{
+        display:block;
+        
+    }
+    #IndividualSelectpage{
+        display: none;
+    }
+    #Selectpage{
+        display:none;
+        
+    }
+    #TeamCheckpage{
+        display: none;
+    }
+    #Gamepage{
+        display: none;
+        overflow:hidden;
+    }
+    img
+    {
+        display: none;
+    }
+    #Gamepage div:nth-child(1){
+        
+        float: left;
+        width: 70%;
+
+    }
+    #Gamepage div:nth-child(2){
+        
+        float: left;
+        width: 30%;
+
+    }
+    #board{
+        width:100%
+        
+    }
+    
+</style>
+<head>
+    <meta charset="utf-8" />
+</head>
+<body>
+    <header>
+        <h1 id="title">
+            보드게임
+        </h1>
+    </header>
+        
+<div id="Mainpage">
+	<button id="individual">
+        By Individual
+    </button>    
+    <button id="team">
+        By Team
+    </button> 
+    <select id="numselection" required>
+        <option value=1> one player</option>
+        <option value=2> two player</option>
+        <option value=3> three player</option>
+        <option value=4> four player</option>
+    </select>
+</div>
+<div id=IndividualSelectpage>
+    <button class="confirm"> Game Start</button>
+</div>
+
+<div id="Selectpage">
+    <h2> </h2>
+    <form id="form">
+        <div id=choicecontainer>
+            <div id="p1choice">
+                <p> 1P </p>
+                <input type="radio" name="p1team" value=1> Red Team <br>
+                <input type="radio" name="p1team" value=0> Blue Team
+            </div>
+            <div id="p2choice">
+                <p> 2P </p>
+                <input type="radio" name="p2team" value=1> Red Team <br>
+                <input type="radio" name="p2team" value=0> Blue Team
+            </div>
+            <div id="p3choice">
+
+                <p> 3P </p>
+                <input type="radio" name="p3team" value=1> Red Team <br>
+                <input type="radio" name="p3team" value=0> Blue Team
+            </div>
+            <div id="p4choice">
+                <p> 4P </p>
+                <input type="radio" name="p4team" value=1> Red Team <br>
+                <input type="radio" name="p4team" value=0> Blue Team
+            </div>
+        </div>
+        </form>
+    <button id="submit"> Submit</button>
+    
+</div>
+<div id="TeamCheckpage">
+    <h2> RED TEAM </h2>
+    <div id=redteam>
+    </div>
+    <h2> VS </h2>
+    <h2> BLUE TEAM </h2>
+    <div id=blueteam>
+    </div>
+    <button class="confirm"> Game Start</button>
+</div>
+<div id="Gamepage">
+    <div id="boardside">
+        <img src='board.png' id="boardimg" z-index="-1">
+        <img src='player.png' id="playerimg" z-index="1">
+        <canvas id="board" width="800" height="500" z-index=-1>>
+
+
+
+        </canvas>
+    </div>
+    <div id="uiside">
+        <hi>  HI</hi>
+    
+    
+    </div>
+</div>
+</body>
+<script src="http://fabricjs.com/lib/fabric.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="script.js"></script>
+</html>
