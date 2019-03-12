@@ -1,8 +1,22 @@
+var sizes=[0.8,1,1.2,1.4,1.6,1.8]
+var cursize=1
 $('#individual').click(playIndividual)
 $('#team').click(playTeam)
 $("#submit").click(setup)
 $(".confirm").click(startgame)
+$(".enlarge").click(function(){
+    cursize+=1
 
+   $("#board").css("transform","scale("+String(sizes[cursize])+")")
+
+})
+$(".shrink").click(function(){
+   cursize=Math.max(0,cursize-=1)
+  $("#board").css("transform","scale("+String(sizes[cursize])+")")
+
+})
+
+var canvas=new fabric.Canvas("board")
 var PNUM=0;
 var CNUM=0;
 var isTeam=false;
@@ -103,7 +117,7 @@ function startgame()
     $('#TeamCheckpage').hide()
     $("header").hide()
     drawboard()
-    runGame(players,redteams,blueteams,isTeam)
+    //runGame(players,redteams,blueteams,isTeam)
 
 }
 
@@ -111,8 +125,8 @@ function drawboard()
 {
 var ctx=document.getElementById("board").getContext('2d')
 
-    var canvas=new fabric.Canvas("board")
 
+    canvas.selection=false
 
     var board=new fabric.Image(document.getElementById("boardimg"),{
         left:0,top:0,
@@ -122,7 +136,7 @@ var ctx=document.getElementById("board").getContext('2d')
         hoverCursor: "pointer"
 
     })
-    canvas.setBackgroundImage(board.scale(0.6))
+    canvas.setBackgroundImage(board)
 
     var p=new fabric.Image(document.getElementById("playerimg"),{
         left:500,top:10,width:300,height:500,
@@ -164,7 +178,7 @@ function runGame(players,red,blue,team)
           if(END) {break;}
         }
         else {
-          alert("stun")
+        //  alert("stun")
         }
 
         p.coolDown1()
@@ -174,9 +188,9 @@ function runGame(players,red,blue,team)
         p.coolDown2()
 
         //skill
-        for(val i=0;i<4;++i)
+        for(var i=0;i<4;++i)
         {
-          val skill=0
+          var skill=0
           if(p.effects[3]>0){alert("no skill!"); break;}
           if(skill===2 && p.level<2){continue;}
           if(skill===3 && p.level<3){continue;}
@@ -184,7 +198,7 @@ function runGame(players,red,blue,team)
 
         }
         p.coolDown3()
-
+        break;
       }
     }
 

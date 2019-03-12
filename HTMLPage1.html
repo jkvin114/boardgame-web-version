@@ -55,30 +55,17 @@
 body
 {
 background: #87e0fd; /* Old browsers */
-background: -moz-linear-gradient(top, #87e0fd 0%, #53cbf1 40%, #05abe0 100%); /* FF3.6-15 */
-background: -webkit-linear-gradient(top, #87e0fd 0%,#53cbf1 40%,#05abe0 100%); /* Chrome10-25,Safari5.1-6 */
-background: linear-gradient(to bottom, #87e0fd 0%,#53cbf1 40%,#05abe0 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#87e0fd', endColorstr='#05abe0',GradientType=0 ); /* IE6-9 */
+
 }
     #Mainpage{
         display:block;
 
     }
-    #IndividualSelectpage{
+    #IndividualSelectpage,#Selectpage,#TeamCheckpage,#Gamepage{
         display: none;
     }
-    #Selectpage{
-        display:none;
 
-    }
-    #TeamCheckpage{
-        display: none;
-    }
-    #Gamepage{
-        display: none;
-        overflow:hidden;
-    }
-    img
+    .hidden
     {
         display: none;
     }
@@ -86,18 +73,71 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#87e0fd', end
 
         float: left;
         width: 70%;
+        height:100%;
+        overflow:auto;
+        cursor:grab;
 
     }
-    #Gamepage div:nth-child(2){
+    #uiside{
 
-        float: left;
+
         width: 30%;
+        overflow:auto;
 
     }
     #board{
-        width:100%
+      width:100%;
+      height:100%;
+
+      float:right;
+      overflow:visible;
+      transform-origin: 0% 0%
+    }
+    #boardside > button{
+      position:absolute;
+
+      left:1%;
+      cursor:pointer;
+
+      color:white;
+      z-index: 1;
+    }
+    #boardside button:nth-child(1)
+    {
+      top:1%;
 
     }
+    #boardside button:nth-child(2)
+    {
+
+      top:7%;
+
+    }
+    #uiside >p{
+      left:50%
+      position:relative;
+    }
+    #mainhpframe{
+      height:18px;
+       border: 4px solid black;
+       background-color:gray;
+       position:relative;
+    }
+    #mainhpframe > span{
+      width:100%;
+      display:block;
+      height: 100%;
+      background: rgb(255,5,5);
+      background: -moz-linear-gradient(top, rgba(255,5,5,1) 1%, rgba(143,2,34,1) 75%, rgba(76,0,11,1) 100%);
+      background: -webkit-linear-gradient(top, rgba(255,5,5,1) 1%,rgba(143,2,34,1) 75%,rgba(76,0,11,1) 100%);
+      background: linear-gradient(to bottom, rgba(255,5,5,1) 1%,rgba(143,2,34,1) 75%,rgba(76,0,11,1) 100%);
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff0505', endColorstr='#4c000b',GradientType=0 );
+      position:relative;
+      overflow:hidden;
+
+    }
+
+
 
 </style>
 <head>
@@ -169,17 +209,30 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#87e0fd', end
     <button class="confirm"> Game Start</button>
 </div>
 <div id="Gamepage">
-    <div id="boardside">
-        <img src='board.png' id="boardimg" z-index="-1">
-        <img src='player.png' id="playerimg" z-index="1">
-        <canvas id="board" width="800" height="500" z-index=-1>>
+    <div id="boardside" class="dragscroll" >
+        <button class='enlarge'> + </button>
+        <button class='shrink'> - </button>
+        <img class="hidden" src='board.png' id="boardimg" z-index="-1">
+        <img class="hidden" src='player.png' id="playerimg" z-index="1">
 
-
-
+        <canvas id="board" width="1100" height="700" z-index=-1>>
         </canvas>
     </div>
     <div id="uiside">
-        <hi>  HI</hi>
+
+        <h1> playername`s turn</h1>
+        <h2> dice <h2>
+        <img src="dice\Side1.gif">
+        <p> 100/100 </p>
+        <div id="mainhpframe">
+          <span id="mainhp">
+
+
+          </span>
+        </div>
+<button id="nextturn"> Next Turn </button>
+
+
 
 
     </div>
@@ -187,6 +240,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#87e0fd', end
 </body>
 <script src="http://fabricjs.com/lib/fabric.js"></script>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="https://cdn.rawgit.com/asvd/dragscroll/master/dragscroll.js"></script>
 <script src="player.js"></script>
 <script src="Bird.js"></script>
 <script src="script.js"></script>

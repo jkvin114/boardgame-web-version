@@ -1,8 +1,4 @@
-function zero(val)
-{
-  if(val<0){return 0;}
-  else {return val;}
-}
+
 function upperlimit(val,lim)
 {
   if(val>lim){return lim}
@@ -11,7 +7,16 @@ function upperlimit(val,lim)
 }
 function decrement(val)
 {
-  return zero(val-1)
+  return Math.max(val-1,0)
+}
+function cool(s)
+{
+  if(this.cooltime[s-1]>0&&!this.onoff[s-1])
+  {
+    alert("no cool")
+    return false
+  }
+  return true
 }
 
 
@@ -48,7 +53,18 @@ function player(turn,AI,char)
       //0.slow 1.speed 2.stun 3.silent 4. shield  5.poison  6.radi  7.annuity 8.slave
     this.skilleffects=[[0,-1],[0,-1]]
     //0.blind,skill user`s turn   1.mushroom[dur,skill user`s turn]
+    this.stats=[0,0,0,0,0,0,0]
+    //0.damagetaken  1.damagedealt  2.healamt  3.moneyearned  4.moneyspent   5.moneytaken
+    this.damagedby=[0,0,0,0]
+    //for eath player, turns left to be count as assist(maximum 3)
+    this.isSameTeam(other)  //true if it is itself or same team , false if individual game or in different team
+    {
+      if(this===other) {return true}
+      if(!isTeam) {return false}
+      if(this.team!==other.team) {return false}
+      return true
 
+    }
 
     this.coolDown1=function()
     {
@@ -65,6 +81,7 @@ function player(turn,AI,char)
     this.coolDown3=function()
     {
       this.skilleffects=this.skilleffects.map(function(x){return [decrement(x[0]),x[1]]})
+      this.damagedby=this.damagedby.map(decrement)
     }
     this.move=function(dice)
     {
@@ -89,21 +106,27 @@ function player(turn,AI,char)
       this.cooltime=[0,0,0]
     }
 
-
-    this.changeMoney=function(m,manner)
+    this.changemoney=function(m,type)
     {
-      switch(manner)
+      switch(type)
       {
         case 0://money earned
+          this.stats[3]+=m
+        break;
         case 1://money spend
+          this.stats[4]+=(-1*m)
+        break;
         case 2://money taken
+          this.stats[5]+=(-1*m)
+        break;
 
       }
       this.money+=m
 
     }
     this.changehealth=function(hp,maxhp)
-    {
+    { if(hp>0){this.stats[1]+=hp}
+      else {this.stats[0]+=(-1*hp)}
       this.MaxHP+=maxhp
       this.HP=Math.min(this.HP+hp,this.MaxHP)
     }
@@ -114,15 +137,6 @@ function player(turn,AI,char)
     this.giveMoney=function(m)
     {
       this.changemoney(m,0)
-      if(m>0)
-      {
-
-
-      }
-      else {
-
-      }
-
     }
     this.takeMoney=function(m)
     {
@@ -149,6 +163,11 @@ function player(turn,AI,char)
     {
       this.changeshield(s)
     }
+    this.addKill=function()
+    {
+      this.kill+=1
+      this.changemoney(70,0)
+    }
     this.giveDamage=function(damage,skillfrom)
     {
       if(this.invulnerable){return false}
@@ -156,6 +175,9 @@ function player(turn,AI,char)
 
       if(this.effects[6]>0){damage*=2;}
       if(damage<=1&&skfrom<0){damage=1;}
+
+      this.damagedby[skillfrom]=3
+
 
       damage-=this.shield
       if(damage<=0) {
@@ -165,16 +187,82 @@ function player(turn,AI,char)
 
       this.changehealth(-1*damage,0)
 
+      if(this.HP<=0)
+      {
+        this.changehealth(this.MaxHP,0)
+        this.death+=1
+        died=true
+
+        this.effects.map(function(x){return 0;})
+        this.duration.map(function(x){return 0;})
+        this.invulnerable=true
+        players[i].addKill()
+        var assists=this.assist()
+      }
+      return died
 
 
     }
+    this.mergeDamage=function(Pdamage,Mdamage,arP,MP)
+    {
+      var totaldamage = 0
+      if (arP <= this.AR)  // arP<=AR
+      {
+          if( Pdamage - (this.AR - arP) > 0)
+            {totaldamage += (Pdamage - (this.AR - arP))}
+      }
+      else { totaldamage += Pdamage}    //arP<=AR
 
+      if (MP <= this.MR)
+      {
+          if (Mdamage - (this.MR - MP) > 0)
+              {totaldamage += (Mdamage - (this.MR - MP))}
+      }
+      else {totaldamage += Mdamage}
 
+      return totaldamage;
 
+    }
+    this.assist=function()
+    {
+      var assists=[]
+      for(var i=0;i<this.damagedby.lengh;++i)
+      {
+        if(this.damagedby[i]>0&&this.turn!=this.damagedby[i])
+        {
+          players[i].assist+=1
+          players[i].changemoney(50,0)
+          assists.push(players[i])
+        }
+      }
+      return assists
+    }
+    this.basicAttack=function()
+    {
 
+      var range=0
+      for(var p of players)
+      {
+        if(Math.abs(this.location-p.location)<=range&&this.isSameTeam(p))
+        var died=this.hitBasicAttack(p)
+        if(!died&&p.skilleffects[0][0]===0&&p.location===this.location&&p.turn!==this.turn)
+        {
+          p.hitBasicAttack(this)
+        }
+      }
 
+    }
+    this.hitBasicAttack=function(target)
+    {
+      var died=false;
+      var totaldamage=target.mergeDamage(this.AD+10,0,this.arP,0)
+      if(this.skilleffects[0][0]===0)
+      {
+        died=target.giveDamage(totaldamage,this.turn)
 
-
+      }
+      return died
+    }
 
 
 
