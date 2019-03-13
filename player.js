@@ -9,15 +9,7 @@ function decrement(val)
 {
   return Math.max(val-1,0)
 }
-function cool(s)
-{
-  if(this.cooltime[s-1]>0&&!this.onoff[s-1])
-  {
-    alert("no cool")
-    return false
-  }
-  return true
-}
+
 
 
 function player(turn,AI,char)
@@ -27,9 +19,9 @@ function player(turn,AI,char)
     this.name=""
     this.char=char
     this.team=true   //true when readteam
-    this.location=0
+    this.pos=0
     this.lastloc=0
-    this.level=0;
+    this.level=3;
     this.money=0;
     this.kill=0
     this.death=0;
@@ -49,7 +41,7 @@ function player(turn,AI,char)
     this.shield=0;
     this.cooltime=[0,0,0]
     this.duration=[0,0,0]
-    this.effects=[0,0,2,0,0,0,0,0]
+    this.effects=[0,0,0,0,0,0,0,0]
       //0.slow 1.speed 2.stun 3.silent 4. shield  5.poison  6.radi  7.annuity 8.slave
     this.skilleffects=[[0,-1],[0,-1]]
     //0.blind,skill user`s turn   1.mushroom[dur,skill user`s turn]
@@ -57,13 +49,23 @@ function player(turn,AI,char)
     //0.damagetaken  1.damagedealt  2.healamt  3.moneyearned  4.moneyspent   5.moneytaken
     this.damagedby=[0,0,0,0]
     //for eath player, turns left to be count as assist(maximum 3)
-    this.isSameTeam(other)  //true if it is itself or same team , false if individual game or in different team
+    this.isSameTeam=function(other)  //true if it is itself or same team , false if individual game or in different team
     {
       if(this===other) {return true}
       if(!isTeam) {return false}
       if(this.team!==other.team) {return false}
       return true
 
+    }
+
+    this.cool=function(s)
+    {
+      if(this.cooltime[s-1]>0&&!this.onoff[s-1])
+      {
+        alert("no cool")
+        return false
+      }
+      return true
     }
 
     this.coolDown1=function()
@@ -85,21 +87,21 @@ function player(turn,AI,char)
     }
     this.move=function(dice)
     {
-      this.lastloc=this.location
-      this.location+=dice;
+      this.lastloc=this.pos
+      this.pos+=dice;
 
       return false
     }
 
-    this.goto=function(location)
+    this.goto=function(pos)
     {
-      this.lastloc=this.location
-      this.location=location;
+      this.lastloc=this.pos
+      this.pos=pos;
 
     }
     this.isBehindOf=function(other)
     {
-      return this.location<other.location
+      return this.pos<other.pos
     }
     this.resetCooltime=function()
     {
@@ -243,9 +245,9 @@ function player(turn,AI,char)
       var range=0
       for(var p of players)
       {
-        if(Math.abs(this.location-p.location)<=range&&this.isSameTeam(p))
+        if(Math.abs(this.pos-p.pos)<=range&&this.isSameTeam(p))
         var died=this.hitBasicAttack(p)
-        if(!died&&p.skilleffects[0][0]===0&&p.location===this.location&&p.turn!==this.turn)
+        if(!died&&p.skilleffects[0][0]===0&&p.pos===this.pos&&p.turn!==this.turn)
         {
           p.hitBasicAttack(this)
         }
@@ -263,8 +265,45 @@ function player(turn,AI,char)
       }
       return died
     }
+    this.chooseTarget=function(range,skill)
+    {
+      var targets=[]
+      for(var p of players){
+        if(Math.abs(this.pos-p.pos)<=range&&this.isSameTeam(p))
+        {targets.push(p)}
+      if(targets.length===0){return -1}
 
 
+      //target choosing
+      var skillto=0
+      return targets[skillto-1].turn
+      }
+
+
+
+    }
+    this.hitOneTarget=function(targetindex,skilldmg,skillfrom,skill)
+    {
+      skillto=skilldmg.target[targetindex]
+      //adamage
+      this.stats[1]+=(skilldmg.pdmg+skilldmg.mdmg+skilldmg.fdmg)
+      died=players[skillto].skillHit(skilldmg,skillfrom,skill)
+
+
+
+    }
+    this.skillHit=function(skilldmg,skillfrom,skill)
+    {
+      if(this.effects[4]>0)
+      {
+        this.effects[4]=0
+        return false
+      }
+      var totaldamage=this.mergeDamage(skilldmg.pdmg,skilldmg.mdmg,players[skillfrom].arP,players[skillfrom].MP)
+      totaldamage+=skilldmg.fdmg
+      return this.giveDamage(totaldamage,skillfrom)
+
+    }
 
 
 }

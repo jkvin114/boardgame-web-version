@@ -3,7 +3,7 @@ function Bird(turn,AI)
   player.call(this,turn,AI,0)
   this.onoff=[false,false,false]
 
-  this.choseSkill=function(skill,cool)
+  this.initSkill=function(s)
   {
     var skilldmg=-1  //-1 when can`t use skill, 0 when it`s not attack skill
     if(this.cool(s))

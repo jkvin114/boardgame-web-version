@@ -136,6 +136,30 @@ background: #87e0fd; /* Old browsers */
       overflow:hidden;
 
     }
+		#dicebtn{
+			display:none;
+			border: 3px solid black;
+			border-radius: 6px;
+			cursor:pointer;
+			left:30%;
+			width:100px;
+			height:100px;
+
+		}
+		#skillbtns{
+		    display: grid;
+		    grid-template-columns: auto auto auto;
+		    background-color: #2196F3;
+
+		}
+		#skillbtns button{
+			display:none;
+			height:50px;
+
+		}
+		#nextturn{
+			display:none;
+		}
 
 
 
@@ -151,6 +175,7 @@ background: #87e0fd; /* Old browsers */
     </header>
 
 <div id="Mainpage">
+	<p id="dummy"></p>
 	<button id="individual">
         By Individual
     </button>
@@ -215,14 +240,14 @@ background: #87e0fd; /* Old browsers */
         <img class="hidden" src='board.png' id="boardimg" z-index="-1">
         <img class="hidden" src='player.png' id="playerimg" z-index="1">
 
-        <canvas id="board" width="1100" height="700" z-index=-1>>
+        <canvas id="board" width="1152" height="648" z-index=-1>>
         </canvas>
     </div>
     <div id="uiside">
 
         <h1> playername`s turn</h1>
-        <h2> dice <h2>
-        <img src="dice\Side1.gif">
+        <h2> dice </h2>
+        <img id="dicebtn" src="dice\Side1.gif" >
         <p> 100/100 </p>
         <div id="mainhpframe">
           <span id="mainhp">
@@ -230,8 +255,13 @@ background: #87e0fd; /* Old browsers */
 
           </span>
         </div>
-<button id="nextturn"> Next Turn </button>
-
+				<div id="skillbtns">
+					<button> Basic Skill</button>
+					<button> Advanced Skill </button>
+					<button> Ultimate Skill</button>
+				</div>
+				<button id="nextturn"> Next Turn </button>
+				<button id="FINISH"> FINISH ALL </button>
 
 
 
@@ -243,6 +273,7 @@ background: #87e0fd; /* Old browsers */
 <script type="text/javascript" src="https://cdn.rawgit.com/asvd/dragscroll/master/dragscroll.js"></script>
 <script src="player.js"></script>
 <script src="Bird.js"></script>
+<script src="Swordsman.js"></script>
 <script src="script.js"></script>
 
 </html>
