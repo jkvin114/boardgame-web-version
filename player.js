@@ -20,7 +20,7 @@ function player(turn,AI,char)
     this.char=char
     this.team=true   //true when readteam
     this.pos=0
-    this.lastloc=0
+    this.lastpos=0
     this.level=3;
     this.money=0;
     this.kill=0
@@ -29,7 +29,7 @@ function player(turn,AI,char)
 
     this.invulnerable=false;
     this.HP=200;
-    this.MaxHP=0;
+    this.MaxHP=200;
     this.AD=0;
     this.AP=0;
     this.AR=0;
@@ -85,19 +85,27 @@ function player(turn,AI,char)
       this.skilleffects=this.skilleffects.map(function(x){return [decrement(x[0]),x[1]]})
       this.damagedby=this.damagedby.map(decrement)
     }
-    this.move=function(dice)
-    {
-      this.lastloc=this.pos
-      this.pos+=dice;
 
+
+    this.move=function(di)
+    {
+      var end=movePlayer(di,1,this.pos)
+      if(end||this.pos+1>=finishPos) {return true}
+
+      this.lastpos=this.pos
+      this.pos+=di;
       return false
     }
 
     this.goto=function(pos)
     {
-      this.lastloc=this.pos
-      this.pos=pos;
+      if(pos>finishPos){gameOver()}
+      levitatePlayer()
 
+      setTimeout(function(){tpPlayer(pos)},700)
+
+      this.lastpos=this.pos
+      this.pos=pos;
     }
     this.isBehindOf=function(other)
     {
@@ -131,6 +139,7 @@ function player(turn,AI,char)
       else {this.stats[0]+=(-1*hp)}
       this.MaxHP+=maxhp
       this.HP=Math.min(this.HP+hp,this.MaxHP)
+
     }
     this.changeshield=function(shield)
     {
@@ -198,7 +207,7 @@ function player(turn,AI,char)
         this.effects.map(function(x){return 0;})
         this.duration.map(function(x){return 0;})
         this.invulnerable=true
-        players[i].addKill()
+        players[skillfrom].addKill()
         var assists=this.assist()
       }
       return died
@@ -269,26 +278,22 @@ function player(turn,AI,char)
     {
       var targets=[]
       for(var p of players){
-        if(Math.abs(this.pos-p.pos)<=range&&this.isSameTeam(p))
-        {targets.push(p)}
-      if(targets.length===0){return -1}
 
+        if(Math.abs(this.pos-p.pos)<=range&&!this.isSameTeam(p))
+          {targets.push(p)}
 
-      //target choosing
-      var skillto=0
-      return targets[skillto-1].turn
       }
+      if(targets.length===0)
+      {return -1}
 
-
-
+      showTarget(targets)
+      //target choosing
     }
-    this.hitOneTarget=function(targetindex,skilldmg,skillfrom,skill)
+    this.hitOneTarget=function(skillto,skilldmg,skillfrom,skill)
     {
-      skillto=skilldmg.target[targetindex]
       //adamage
       this.stats[1]+=(skilldmg.pdmg+skilldmg.mdmg+skilldmg.fdmg)
       died=players[skillto].skillHit(skilldmg,skillfrom,skill)
-
 
 
     }
