@@ -33,35 +33,125 @@ var playerimgs=[]
 var targetimgs=[]
 var otherhpfrms=$(".otherhpfrm").toArray()
 var otherhps=$(".otherhp").toArray()
+var dmgindicator=null
 var thisturn=0
 var skilldmg=-1
 var skillcount=0
-var diff=[[20,20],[20,-20],[-20,20],[-20,-20]]
+var diff=[[7,7],[7,-7],[-7,7],[-7,-7]]
 const Map={
   "coordinates":
   [
-  {"x":138,"y":178},
-  {"x":258,"y":178},
-  {"x":378,"y":178},
-  {"x":510,"y":178},
-  {"x":647,"y":178},
-  {"x":778,"y":178},
-  {"x":967,"y":178},
-  {"x":967,"y":378},
-  {"x":778,"y":378},
-  {"x":647,"y":378},
-  {"x":510,"y":378},
-  {"x":378,"y":378},
-  {"x":258,"y":378},
-  {"x":138,"y":378}
+    {x:46,y:41},
+    {x:110,y:52},
+    {x:163,y:44},
+    {x:212,y:65},
+    {x:268,y:70},
+    {x:324,y:82},
+    {x:354,y:131},
+    {x:340,y:188},
+    {x:286,y:199},
+    {x:228,y:190},
+    {x:180,y:163},
+    {x:129,y:172},
+    {x:74,y:198},
+    {x:50,y:252},
+    {x:104,y:284},
+    {x:157,y:300},
+    {x:217,y:311},
+    {x:280,y:333},
+    {x:335,y:335},
+    {x:356,y:406},
+    {x:323,y:457},
+    {x:272,y:448},
+    {x:167,y:407},
+    {x:108,y:389},
+    {x:57,y:397},
+    {x:31,y:453},
+    {x:37,y:505},
+    {x:50,y:555},
+    {x:107,y:566},
+    {x:159,y:588},
+    {x:212,y:545},
+    {x:269,y:532},
+    {x:322,y:537},
+    {x:431,y:561},
+    {x:478,y:568},
+    {x:533,y:553},
+    {x:596,y:532},
+    {x:658,y:514},
+    {x:682,y:457},
+    {x:623,y:434},
+    {x:570,y:427},
+    {x:468,y:467},
+    {x:434,y:429},
+    {x:410,y:379},
+    {x:430,y:327},
+    {x:482,y:316},
+    {x:531,y:332},
+    {x:583,y:350},
+    {x:636,y:345},
+    {x:691,y:322},
+    {x:714,y:271},
+    {x:732,y:217},
+    {x:676,y:183},
+    {x:624,y:172},
+    {x:566,y:199},
+    {x:515,y:210},
+    {x:463,y:195},
+    {x:435,y:139},
+    {x:448,y:87},
+    {x:503,y:57},
+    {x:502,y:58},
+    {x:553,y:78},
+    {x:607,y:96},
+    {x:662,y:77},
+    {x:716,y:51},
+    {x:825,y:84},
+    {x:876,y:106},
+    {x:921,y:88},
+    {x:987,y:62},
+    {x:1018,y:119},
+    {x:1042,y:173},
+    {x:1018,y:222},
+    {x:965,y:209},
+    {x:919,y:194},
+    {x:860,y:210},
+    {x:813,y:223},
+    {x:789,y:276},
+    {x:837,y:300},
+    {x:891,y:291},
+    {x:946,y:281},
+    {x:995,y:294},
+    {x:1047,y:315},
+    {x:1041,y:364},
+    {x:980,y:376},
+    {x:929,y:375},
+    {x:875,y:368},
+    {x:824,y:361},
+    {x:773,y:377},
+    {x:750,y:432},
+    {x:801,y:456},
+    {x:854,y:440},
+    {x:907,y:449},
+    {x:961,y:461},
+    {x:1007,y:484},
+    {x:1035,y:530},
+    {x:982,y:563},
+    {x:931,y:547},
+    {x:876,y:538},
+    {x:824,y:538},
+    {x:750,y:546}
   ],
-  "finish":13
+  "finish":101
+  "muststop":[16,38,71,101]
+  "respawn":[0,16,38,53,71]
 }
 
 
 const coordinates=Map.coordinates         //2d array of each position on board
-const finishPos=Map.finish                //num of finish position
-
+const finishPos=101           //num of finish position
+const muststop=Map.muststop
+const respawn=Map.respawn
 
 
 
@@ -202,7 +292,7 @@ var ctx=document.getElementById("board").getContext('2d')
 
       })
 
-      canvas.add(p.scale(0.2))
+      canvas.add(p.scale(0.13))
       playerimgs.push(p)
     }
     for(var i=0;i<PNUM;++i)
@@ -219,17 +309,17 @@ var ctx=document.getElementById("board").getContext('2d')
         })
         switch (i) {
           case 0:
-          p.on('mousedown', function() {
+          p.on('selected', function() {
             targetLocked(0)
           });
             break;
           case 1:
-          p.on('mousedown', function() {
+          p.on('selected', function() {
             targetLocked(1)
           });
             break;
           case 2:
-          p.on('mousedown', function() {
+          p.on('selected', function() {
             targetLocked(2)
           });
             break;
@@ -242,11 +332,22 @@ var ctx=document.getElementById("board").getContext('2d')
         }
 
 
-          canvas.add(p.scale(0.16))
+          canvas.add(p.scale(0.1))
           targetimgs.push(p)
 
     }
-
+    dmgindicator = new fabric.Text("", {
+    fontSize: 40,fill:'#D81B60',
+    opacity:1,fontWeight: 'bold',
+    width:500,height:500,
+    lockMovementX: true, lockMovementY: true,
+    hasControls: false,
+    lockScalingX: true, lockScalingY:true,lockRotation: true,
+    originX: 'center',
+    originY: 'center',
+    top:100,left:100
+});
+  canvas.add(dmgindicator)
 }
 function nextTurn()
 {
@@ -271,19 +372,24 @@ function showDiceBtn()
 {
   $("#mainhpframe").css("width",String(players[thisturn].MaxHP)+"px")
   $("#mainhp").css("width",String(players[thisturn].HP)+"px")
+  players[thisturn].hpframenum=0
+
   var j=0;
   for(var i=0;i<players.length;++i)
   {
 
     if(i!==thisturn)
     {
-      $(otherhpfrms[j]).css("width",String((players[i].MaxHP*0.6))+"px")
-      $(otherhps[j]).css("width",String(players[i].HP*0.6)+"px")
+      players[i].hpframenum=j+1
+      $(otherhpfrms[j]).css("width",String((players[i].MaxHP*0.9))+"px")
+      $(otherhps[j]).css("width",String(players[i].HP*0.9)+"px")
       j+=1;
     }
 
 
   }
+  players[thisturn].invulnerable=false
+
   $("#dicebtn").show()
 }
 var dicecount=0
@@ -381,8 +487,8 @@ function showTarget(targets)
     var tr=t.turn
     var x=playerimgs[tr].get('left')
     var y=playerimgs[tr].get('top')
-    targetimgs[tr].set({left:x,top:y,opacity:1,scaleY:2})
-    targetimgs[tr].animate('scaleY',0.16,{
+    targetimgs[tr].set({left:x,top:y,opacity:1,scaleY:2,hasBorders:true})
+    targetimgs[tr].animate('scaleY',0.1,{
       onChange: canvas.renderAll.bind(canvas),
       duration: 500,
       easing: fabric.util.ease.easeOutBounce
@@ -397,7 +503,7 @@ function resetTarget()
 {
   for(var t of targetimgs)
   {
-    t.set({opacity:0,top:0,left:0})
+    t.set({opacity:0,top:600,left:1100,hasBorders:false}  )
     t.animate('scaleY',0.16,{
       onChange: canvas.renderAll.bind(canvas),
       duration: 100,
@@ -486,7 +592,54 @@ function targetLocked(target)
     resetTarget()
 
 }
+function animateHP(target,hp,maxhp,change)
+{
+  if(target===thisturn)
+  {
+    $("#mainhpframe").css("width",String(players[target].MaxHP)+"px")
+    $("#mainhp").css("width",String(players[target].HP)+"px")
 
+  }
+  else{
+    var frameindex=players[target].hpframenum-1
+    $(otherhpfrms[frameindex]).animate({
+      "width":String((maxhp*0.9))+"px"
+    },500,function(){})
+
+    $(otherhps[frameindex]).animate({
+      "width":String(hp*0.9)+"px"
+    },500,function(){})
+
+
+
+  }
+  var x=playerimgs[target].get('left')
+  var y=playerimgs[target].get('top')
+  dmgindicator.set({top:(y),left:x,opacity:1})
+  if(change<0){
+    dmgindicator.set({fill:'#ff0000'})
+    dmgindicator.set('text',String(change))
+
+  }
+  else
+  {
+    dmgindicator.set('fill','#00ff14')
+    dmgindicator.set('text',('+'+String(change)))
+  }
+  dmgindicator.animate('opacity',0,{
+    onChange: canvas.renderAll.bind(canvas),
+    duration: 2000,
+    easing: fabric.util.ease.easeOutCubic
+  });
+  dmgindicator.animate('top',(y-50),{
+    onChange: canvas.renderAll.bind(canvas),
+    duration: 2000,
+    easing: fabric.util.ease.easeOutCubic
+  });
+
+
+
+}
 
 
 

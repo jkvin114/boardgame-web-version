@@ -26,11 +26,11 @@ function player(turn,AI,char)
     this.kill=0
     this.death=0;
     this.assist=0;
-
+    this.hpframenum=0;       //0 if using mainframe, 1~3:otherframe
     this.invulnerable=false;
-    this.HP=200;
-    this.MaxHP=200;
-    this.AD=0;
+    this.HP=600;
+    this.MaxHP=600;
+    this.AD=200;
     this.AP=0;
     this.AR=0;
     this.MR=0;
@@ -139,8 +139,9 @@ function player(turn,AI,char)
       else {this.stats[0]+=(-1*hp)}
       this.MaxHP+=maxhp
       this.HP=Math.min(this.HP+hp,this.MaxHP)
-
+      animateHP(this.turn,this.HP,this.MaxHP,hp)
     }
+
     this.changeshield=function(shield)
     {
       this.shield+=shield
