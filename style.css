@@ -1,0 +1,416 @@
+
+		body
+		{
+        background: linear-gradient(to bottom, rgba(248,255,232,1) 0%,
+        rgba(227,245,171,1) 61%,rgba(193,219,100,1) 100%);
+		    font-family:"Showcard Gothic";
+
+		}
+    html,body{
+      height:100%;
+    }
+    #Mainpage{
+        display:block;
+    }
+    #Mainpage > h3{
+      color: #1f842a;
+      font-size:50px;
+      text-align: center;
+    }
+		#Mainpage > h4{
+      color: #1f842a;
+      font-size:30px;
+      text-align: center;
+    }
+    .mainbtn{
+      height:140px;
+			width:300px;
+			color:white;
+			background-color: #00b235;
+			cursor:pointer;
+			text-align:center;
+			padding: 10px 5px;
+			font-size: 45px;
+      margin: 50px auto;
+			border:none;
+			font-family	:"Showcard Gothic"
+		}
+    #mainbtncontainer{
+      display:grid;
+      grid-template-columns:auto auto;
+    }
+    #individual{
+      float:right;
+    }
+    #team{
+      float:right;
+    }
+    #numselectionbtn{
+      float:left;
+      display:inline-block;
+    }
+    #numselection{
+      display:grid;
+      grid-template-columns: auto auto;
+			position: absolute;
+
+    }
+		#numselection:hover .dropdown{
+			display:block;
+
+		}
+		#dropdown{
+			display:grid;
+      grid-template-columns: auto auto auto auto;
+		}
+  	.dropdown{
+      display:none;
+      float:left;
+      z-index: 1;
+      background-color: white;
+			box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      color:lightgray;
+      margin: 0px 0px;
+			height:140px;
+			width:300px;
+			cursor:pointer;
+			text-align:center;
+			padding: 10px 5px;
+			font-size: 45px;
+    }
+		.dropdown:hover{
+				color:gray;
+				background-color: lightgray;
+		}
+    #individual:hover,#team:hover ,#numselectionbtn:hover{
+			box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+			background-color: #007c25;
+		}
+
+    #playbtn{
+        background-color: palegreen;
+        font-size: 3vw;
+        color:black;
+        display: inline-block;
+        padding: 2vw 5vw;
+        border-radius: 10%;
+
+
+
+    }
+		#Selectpage >h2{
+			font-size: 34px;
+			text-align: center;
+		}
+    #choicecontainer{
+        display: grid;
+        grid-template-columns: auto auto;
+        background-color: white;
+
+        }
+        #choicecontainer div{
+            border: 3px solid lightgray;
+            padding: 15px;
+            font-size: 15px;
+            text-align: center;
+        }
+				.container{
+					display: block;
+					position: relative;
+					padding: 35px;
+					margin-bottom: 12px;
+					cursor: pointer;
+					font-size:32px;
+				}
+				.container input{
+					opacity:0;
+					cursor:pointer;
+				}
+				.checkmark{
+					position: absolute;
+					top:20%;
+					left:60%;
+					height:60px;
+					width:60px;
+
+				}
+				.red{
+						background-color: #ff8484;
+				}
+				.blue{
+					background-color: #aad6ff;
+				}
+				.container input:checked ~ img{
+				  z-index:1;
+					display:block;
+				}
+				.check{
+					position: absolute;
+					top:20%;
+					left:60%;
+					height:60px;
+					width:60px;
+				}
+
+				#TeamCheckpage{
+					display: grid;
+					grid-template-columns: 40% 20% 40%;
+				}
+        #redteam{
+            display: block;
+            background-color:lightcoral;
+
+
+        }
+        #blueteam{
+            display: block;
+            background-color:cornflowerblue;
+
+        }
+        #TeamCheckpage h1{
+            text-align:center
+        }
+				.confirm:hover{
+					background-color: #007c25;
+					box-shadow: 5px 5px 10px gray;
+				}
+				.iname{
+					font-size: 40px;
+					margin-left: 100px;
+					margin-bottom: 50px;
+				}
+				.iselection,.ai{
+					background-color: white;
+					border:2px solid lightgray;
+					margin:20px;
+					width:50%;
+				}
+				.addai{
+					display:block;
+					background-color: white;
+					color:lightgray;
+					font-size:100px;
+					border-radius: 50%;
+					width:120px;
+					height:120px;
+					border:none;
+					cursor:pointer;
+					margin-left: 100px;
+					margin-top:50px;
+
+				}
+				.addai:hover{
+					background-color: lightgray;
+					color:gray;
+				}
+
+
+
+    #Gamepage{
+      background: #84ff92; /* Old browsers */
+    }
+		#IndividualSelectpage,#Selectpage,#TeamCheckpage,#Gamepage{
+        display: none;
+    }
+    .hidden
+    {
+        display: none;
+    }
+    #boardside{
+
+        float: bottom;
+        height:100%;
+        overflow:auto;
+        cursor:grab;
+
+    }
+    #uiside{
+				display: grid;
+				grid-template-columns: auto auto;
+				grid-column-gap:20px;
+				float:top;
+        overflow:auto;
+				background-color: white;
+				border: 5px solid lightgray;
+				height:300px;
+    }
+		#uiside div:nth-child(1)
+		{
+			grid-row-start:1;
+			grid-row-end:4;
+
+		}
+
+    #board{
+      width:100%;
+      height:100%;
+
+      float:right;
+      overflow:visible;
+      transform-origin: 0% 0%
+    }
+
+    #boardside > button{
+      position:absolute;
+
+
+      cursor:pointer;
+
+      color:white;
+      z-index: 1;
+    }
+    #boardside button:nth-child(1)
+    {
+			left:1%;
+      top:430px;
+			width:40px;
+			height:40px;
+			background-color: white;
+			color:black;
+			font-size: 30px;
+
+
+    }
+    #boardside button:nth-child(2)
+    {
+			left:1%;
+      top:480px;
+			width:40px;
+			height:40px;
+			font-size: 30px;
+			background-color: white;
+			color:black;
+    }
+		#skillcancel{
+			position:absolute;
+
+			padding:30px 40px;
+      left:90%;
+			top:330px;
+			cursor:pointer;
+			color:white;
+			font-size:25px;
+			font-family: "Showcard Gothic";
+			background-color: #ff4f4f;
+      z-index: 1;
+
+		}
+    #uiside >p{
+      left:50%
+      position:relative;
+
+    }
+    .hpframe{
+       height:20px;
+			 width:200px;
+       border: 2px solid black;
+       background-color:white;
+       position:relative;
+
+    }
+    .hp{
+      width:100%;
+      display:block;
+      height: 100%;
+			background: rgb(255,7,11);
+			background: repeating-linear-gradient(to right, rgba(16,242,58,1) 0px,rgba(16,242,58,1) 14px,
+			rgba(16,242,58,1) 14px,rgba(0,0,0,1) 14px,rgba(0,0,0,1) 15px);
+
+    }
+		.otherhpfrm
+		{
+			height:16px;
+			width:160px;
+		}
+		.otherhp{
+			background: repeating-linear-gradient(to right, rgba(16,242,58,1) 0px,rgba(16,242,58,1) 12px,
+			rgba(16,242,58,1) 12px,rgba(0,0,0,1) 12px,rgba(0,0,0,1) 13px);
+		}
+
+		#smallhpframe{
+			height:6px;
+			width:100px;
+			border: 3px solid black;
+			border-radius:4px;
+			background-color:lightgray;
+			position:absolute;
+ 			top:300px;
+ 			left:300px;
+			z-index:2;
+		}
+		#smallhpframe > span{
+			width:10%;
+			display:block;
+			height: 8px;
+			background: rgb(255,5,5);
+			background: -moz-linear-gradient(top, rgba(255,5,5,1) 1%, rgba(143,2,34,1) 75%, rgba(76,0,11,1) 100%);
+			background: -webkit-linear-gradient(top, rgba(255,5,5,1) 1%,rgba(143,2,34,1) 75%,rgba(76,0,11,1) 100%);
+			background: linear-gradient(to bottom, rgba(255,5,5,1) 1%,rgba(143,2,34,1) 75%,rgba(76,0,11,1) 100%);
+			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff0505', endColorstr='#4c000b',GradientType=0 );
+			position:relative;
+			overflow:hidden;
+
+		}
+		#dicebtn{
+			display:none;
+
+			cursor:pointer;
+			left:30%;
+			width:60px;
+			height:60px;
+
+		}
+		#dicebtn:hover{
+			transform:scale(1.2);
+		}
+
+
+		#skillbtns{
+		    display: grid;
+		    grid-template-columns: auto auto auto;
+				grid-column-gap: 10px;
+
+
+
+		}
+		#skillbtns p{
+			display:none;
+			height:60px;
+			width:120px;
+			color:white;
+			background-color: #00b235;
+			cursor:pointer;
+			text-align:center;
+			padding: 10px 5px;
+			font-size: 23px;
+			font-family:"Showcard Gothic";
+		}
+		#skillbtns p:hover{
+			box-shadow: 5px 5px 10px lightgray;
+			background-color: #007c25;
+		}
+		#skillcancel:hover{
+			box-shadow: 5px 5px 10px gray;
+		}
+		#skillbtns p:active{
+			transform: translateY(4px);
+			box-shadow: 2px 2px 10px gray;
+		}
+		#nextturn{
+			width:200px;
+			height:40px;
+			display:none;
+			padding:15px;
+			color:white;
+			background-color: #00b235;
+			text-align: center;
+			font-size:25px;
+			cursor:pointer;
+			font-family:"Showcard Gothic";
+
+		}
+		#nextturn:hover{
+			background-color: #007c25;
+			box-shadow: 5px 5px 10px lightgray;
+
+		}

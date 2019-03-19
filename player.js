@@ -28,9 +28,9 @@ function player(turn,AI,char)
     this.assist=0;
     this.hpframenum=0;       //0 if using mainframe, 1~3:otherframe
     this.invulnerable=false;
-    this.HP=600;
-    this.MaxHP=600;
-    this.AD=200;
+    this.HP=200;
+    this.MaxHP=200;
+    this.AD=100;
     this.AP=0;
     this.AR=0;
     this.MR=0;
@@ -201,6 +201,7 @@ function player(turn,AI,char)
 
       if(this.HP<=0)
       {
+        this.HP=0
         this.changehealth(this.MaxHP,0)
         this.death+=1
         died=true

@@ -2,303 +2,200 @@
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 
+<link rel="stylesheet" type="text/css" href="style.css">
 
-
-
-<style>
-
-#title{
-
-	color:blue;
-	border:2px solid DodgerBlue;
-    font-size: 5vw;
-    text-align: center;
-}
-#playbtn{
-    background-color: palegreen;
-    font-size: 3vw;
-    color:black;
-    display: inline-block;
-    padding: 2vw 5vw;
-    border-radius: 10%;
-
-
-
-}
-#choicecontainer{
-    display: grid;
-    grid-template-columns: auto auto;
-    background-color: #2196F3;
-
-    }
-    #choicecontainer div{
-        border: 1px solid rgba(0, 0, 0, 0.8);
-        padding: 15px;
-        font-size: 15px;
-        text-align: center;
-    }
-    #redteam{
-        display: grid;
-        grid-template-columns: auto auto auto;
-        background-color:lightcoral;
-
-    }
-    #blueteam{
-        display: grid;
-        grid-template-columns: auto auto auto;
-        background-color:cornflowerblue;
-
-    }
-    #TeamCheckpage h2{
-        text-align:center
-    }
-		body
-		{
-		background: #84ff92; /* Old browsers */
-
-		}
-    #Mainpage{
-        display:block;
-
-    }
-    #IndividualSelectpage,#Selectpage,#TeamCheckpage,#Gamepage{
-        display: none;
-    }
-
-    .hidden
-    {
-        display: none;
-    }
-    #Gamepage div:nth-child(1){
-
-        float: left;
-        width: 70%;
-        height:100%;
-        overflow:auto;
-        cursor:grab;
-
-    }
-    #uiside{
-
-
-        width: 30%;
-        overflow:auto;
-
-    }
-    #board{
-      width:100%;
-      height:100%;
-
-      float:right;
-      overflow:visible;
-      transform-origin: 0% 0%
-    }
-
-    #boardside > button{
-      position:absolute;
-
-
-      cursor:pointer;
-
-      color:white;
-      z-index: 1;
-    }
-    #boardside button:nth-child(1)
-    {
-			left:1%;
-      top:10%;
-			width:40px;
-			height:40px;
-			background-color: white;
-			color:black;
-			font-size: 30px;
-
-
-    }
-    #boardside button:nth-child(2)
-    {
-			left:1%;
-      top:15%;
-			width:40px;
-			height:40px;
-			font-size: 30px;
-			background-color: white;
-			color:black;
-    }
-		#skillcancel{
-			position:absolute;
-			padding-left: 80px;
-			padding-right: 80px;
-			padding-top: 30px;
-			padding-bottom: 30px;
-      left:50%;
-			top:70%;
-			cursor:pointer;
-			color:black;
-      z-index: 1;
-
-		}
-    #uiside >p{
-      left:50%
-      position:relative;
-    }
-    .hpframe{
-       height:20px;
-			 width:200px;
-       border: 2px solid black;
-       background-color:white;
-       position:relative;
-
-    }
-    .hp{
-      width:100%;
-      display:block;
-      height: 100%;
-			background: rgb(255,7,11);
-			background: repeating-linear-gradient(to right, rgba(16,242,58,1) 0px,rgba(16,242,58,1) 9px,
-			rgba(16,242,58,1) 9px,rgba(0,0,0,1) 9px,rgba(0,0,0,1) 10px);
-
-    }
-		.otherhpfrm
-		{
-			height:16px;
-			width:320px;
-		}
-		.otherhp{
-			background: repeating-linear-gradient(to right, rgba(16,242,58,1) 0px,rgba(16,242,58,1) 8px,
-			rgba(16,242,58,1) 8px,rgba(0,0,0,1) 8px,rgba(0,0,0,1) 9px);
-		}
-
-		#smallhpframe{
-			height:6px;
-			width:100px;
-			border: 3px solid black;
-			border-radius:4px;
-			background-color:lightgray;
-			position:absolute;
- 			top:300px;
- 			left:300px;
-			z-index:2;
-		}
-		#smallhpframe > span{
-			width:10%;
-			display:block;
-			height: 8px;
-			background: rgb(255,5,5);
-			background: -moz-linear-gradient(top, rgba(255,5,5,1) 1%, rgba(143,2,34,1) 75%, rgba(76,0,11,1) 100%);
-			background: -webkit-linear-gradient(top, rgba(255,5,5,1) 1%,rgba(143,2,34,1) 75%,rgba(76,0,11,1) 100%);
-			background: linear-gradient(to bottom, rgba(255,5,5,1) 1%,rgba(143,2,34,1) 75%,rgba(76,0,11,1) 100%);
-			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff0505', endColorstr='#4c000b',GradientType=0 );
-			position:relative;
-			overflow:hidden;
-
-		}
-		#dicebtn{
-			display:none;
-
-			cursor:pointer;
-			left:30%;
-			width:100px;
-			height:100px;
-
-		}
-		#uiside > button{
-			padding:15px;
-		}
-
-		#skillbtns{
-		    display: grid;
-		    grid-template-columns: auto auto auto;
-		    background-color: #2196F3;
-
-		}
-		#skillbtns button{
-			display:none;
-			height:50px;
-
-		}
-		#nextturn{
-			display:none;
-		}
-
-
-
-</style>
 <head>
     <meta charset="utf-8" />
 </head>
 <body>
-    <header>
-        <h1 id="title">
-            보드게임
-        </h1>
-    </header>
+
 
 <div id="Mainpage">
-	<p id="dummy"></p>
-	<button id="individual">
-        By Individual
-    </button>
-    <button id="team">
-        By Team
-    </button>
-    <select id="numselection" required>
-        <option value=1> one player</option>
-        <option value=2> two player</option>
-        <option value=3> three player</option>
-        <option value=4> four player</option>
-    </select>
+		<h3> Choose play mode and player number
+		</h3>
+    <h4>
+		</h4>
+		<div id=mainbtncontainer>
+			<div id="individual" class="mainbtn">
+	        By Individual
+	    </div>
+			<div id="team" class="mainbtn">
+	        By Team
+	    </div>
+
+		</div>
+
+		<div id="numselection">
+			<a id="numselectionbtn" class="mainbtn">
+					player number
+			</a>
+      <div id="dropdown">
+  			<a class="dropdown">1 player</a>
+  			<a class="dropdown">2 player</a>
+  			<a class="dropdown">3 player</a>
+  			<a class="dropdown">4 player</a>
+      </div>
+		</div>
+
 </div>
 <div id=IndividualSelectpage>
-    <button class="confirm"> Game Start</button>
+    <div class="iselection hidden">
+      <p class="iname">1P</p>
+    </div>
+    <div class="iselection hidden">
+      <p class="iname">2P</p>
+    </div>
+    <div class="iselection hidden">
+      <p class="iname"> 3P</p>
+    </div>
+    <div class="iselection hidden">
+      <p class="iname">4P</p>
+    </div>
+    <button class="addai hidden" value=5> +</button>
+    <div class="ai hidden">
+      <p class="iname">1P(Computer)</p>
+    </div>
+    <button class="addai hidden" value=7> +</button>
+    <div class="ai hidden">
+      <p class="iname">2P(Computer)</p>
+    </div>
+    <button class="addai hidden" value=9> +</button>
+    <div class="ai hidden">
+      <p class="iname">3P(Computer)</p>
+    </div>
+    <button class="addai hidden" value=11> +</button>
+    <div class="ai hidden">
+      <p class="iname">4P(Computer)</p>
+    </div>
+
+
+
+    <button class="confirm mainbtn"> Game Start</button>
 </div>
 
 <div id="Selectpage">
     <h2> </h2>
-    <form id="form">
-        <div id=choicecontainer>
-            <div id="p1choice">
-                <p> 1P </p>
-                <input type="radio" name="p1team" value=1> Red Team <br>
-                <input type="radio" name="p1team" value=0> Blue Team
-            </div>
-            <div id="p2choice">
-                <p> 2P </p>
-                <input type="radio" name="p2team" value=1> Red Team <br>
-                <input type="radio" name="p2team" value=0> Blue Team
-            </div>
-            <div id="p3choice">
 
-                <p> 3P </p>
-                <input type="radio" name="p3team" value=1> Red Team <br>
-                <input type="radio" name="p3team" value=0> Blue Team
-            </div>
-            <div id="p4choice">
-                <p> 4P </p>
-                <input type="radio" name="p4team" value=1> Red Team <br>
-                <input type="radio" name="p4team" value=0> Blue Team
-            </div>
-        </div>
-        </form>
-    <button id="submit"> Submit</button>
+      <div id=choicecontainer>
+          <div id="p1choice">
+              <p style="font-size:30px"> 1P </p>
+              <label class="container"> Red Team
+                <input type="radio" name="p1team" value=1>
+                <span class="checkmark red"></span>
+                <img src="check.png" class="hidden check"></img>
+              </label>
+              <label class="container">Blue Team
+                <input type="radio" name="p1team" value=0>
+                <span class="checkmark blue"></span>
+                <img src="check.png" class="hidden check"></img>
+              </label>
+          </div>
+          <div id="p2choice">
+              <p style="font-size:30px"> 2P </p>
+              <label class="container"> Red Team
+                <input type="radio" name="p2team" value=1>
+                <span class="checkmark red"></span>
+                <img src="check.png" class="hidden check"></img>
+              </label>
+              <label class="container">Blue Team
+                <input type="radio" name="p2team" value=0>
+                <span class="checkmark blue"></span>
+                <img src="check.png" class="hidden check"></img>
+              </label>
+          </div>
+          <div id="p3choice">
+
+              <p style="font-size:30px"> 3P </p>
+              <label class="container"> Red Team
+                <input type="radio" name="p3team" value=1>
+                <span class="checkmark red"></span>
+                <img src="check.png" class="hidden check"></img>
+              </label>
+              <label class="container">Blue Team
+                <input type="radio" name="p3team" value=0>
+                <span class="checkmark blue"></span>
+                <img src="check.png" class="hidden check"></img>
+              </label>
+          </div>
+          <div id="p4choice">
+              <p style="font-size:30px"> 4P </p>
+              <label class="container"> Red Team
+                <input type="radio" name="p4team" value=1>
+                <span class="checkmark red"></span>
+                <img src="check.png" class="hidden check"></img>
+              </label>
+              <label class="container">Blue Team
+                <input type="radio" name="p4team" value=0>
+                <span class="checkmark blue"></span>
+                <img src="check.png" class="hidden check"></img>
+              </label>
+          </div>
+      </div>
+    <a class="mainbtn" id="submit"> Submit</a>
 
 </div>
 <div id="TeamCheckpage">
-    <h2> RED TEAM </h2>
+
     <div id=redteam>
+      <h1 style={"font-size:30px","text-align":"center"}> RED TEAM </h1>
     </div>
-    <h2> VS </h2>
-    <h2> BLUE TEAM </h2>
+    <h1 style="margin-top:300px"> VS </h1>
     <div id=blueteam>
+      <h1 style={"font-size:30px","text-align":"center"}> BLUE TEAM </h1>
     </div>
-    <button class="confirm"> Game Start</button>
+    <a class="confirm mainbtn"> Game Start </a>
 </div>
 <div id="Gamepage">
+	<div id="uiside">
+
+
+				<div>
+					<p class="hpi"> player 1 200/200 </p>
+						<div id="mainhpframe" class="hpframe">
+							<span id="mainhp" class="hp">
+							</span>
+						</div>
+
+					<p class="hpi"> player 2 200/200 </p>
+						<div id="otherhpframe1" class="hpframe otherhpfrm">
+							<span id="otherhp1" class="hp otherhp">
+							</span>
+						</div>
+
+					<p class="hidden hpi"> player 3 200/200 </p>
+						<div id="otherhpframe2" class="hidden hpframe otherhpfrm ">
+							<span id="otherhp2" class="hp otherhp">
+							</span>
+						</div>
+
+					<p class="hidden hpi"> player 4 200/200 </p>
+						<div id="otherhpframe3" class="hidden hpframe otherhpfrm">
+							<span id="otherhp3" class="hp otherhp">
+							</span>
+						</div>
+
+				</div>
+			<div>
+				<h1 color:white;> playername`s turn</h1>
+
+				<img id="dicebtn" src="dice\1.png">
+				<p id="nextturn"> Next Turn </p>
+				<div id="skillbtns">
+					<p> Basic Skill</p>
+					<p> Advanced Skill </p>
+					<p> Ultimate Skill</p>
+				</div>
+
+				<button id="FINISH" class="hidden"> FINISH ALL </button>
+			</div>
+
+
+	</div>
     <div id="boardside" class="dragscroll" >
         <button class='enlarge'> + </button>
         <button class='shrink'> - </button>
-				<button id="skillcancel" class="hidden"> Cancel </button>
-				<div id="smallhpframe">
+				<p id="skillcancel" class="hidden"> Cancel </p>
+				<div id="smallhpframe" class="hidden">
           <span id="smallhp">
           </span>
         </div>
@@ -313,44 +210,28 @@
         <img class="hidden" src='board.png' id="boardimg" z-index="-1">
         <img class="hidden" src='player.png' id="playerimg" z-index="1">
 				<img class="hidden" src='target.png' id="targetimg" z-index="1">
-        <canvas id="board" width="1100" height="600" z-index=-1>
+				<div id="obswrapper" class="hidden">
+					<img src='obstacle/0.png'>
+					<img src='obstacle/1.png'>
+					<img src='obstacle/2.png'>
+					<img src='obstacle/3.png'>
+					<img src='obstacle/4.png'>
+					<img src='obstacle/5.png'>
+					<img src='obstacle/6.png'>
+					<img src='obstacle/7.png'>
+					<img src='obstacle/8.png'>
+					<img src='obstacle/9.png'>
+					<img src='obstacle/10.png'>
+					<img src='obstacle/11.png'>
+					<img src='obstacle/12.png'>
+					<img src='obstacle/13.png'>
+					<img src='obstacle/14.png'>
+					<img src='obstacle/15.png'>
+				</div>
+        <canvas id="board" width="1100" height="700" z-index=-1>
         </canvas>
     </div>
-    <div id="uiside">
 
-        <h1 color:white;> playername`s turn</h1>
-        <h2> dice </h2>
-        <img id="dicebtn" src="dice\1.png">
-
-        <p> 100/100 </p>
-        <div id="mainhpframe" class="hpframe">
-          <span id="mainhp" class="hp">
-          </span>
-        </div>
-				<div id="otherhpframe1" class="hpframe otherhpfrm">
-          <span id="otherhp1" class="hp otherhp">
-          </span>
-        </div>
-				<div id="otherhpframe2" class="hidden hpframe otherhpfrm">
-          <span id="otherhp2" class="hp otherhp">
-          </span>
-        </div>
-				<div id="otherhpframe3" class="hidden hpframe otherhpfrm">
-          <span id="otherhp3" class="hp otherhp">
-          </span>
-        </div>
-
-				<div id="skillbtns">
-					<button> Basic Skill</button>
-					<button> Advanced Skill </button>
-					<button> Ultimate Skill</button>
-				</div>
-				<button id="nextturn"> Next Turn </button>
-				<button id="FINISH"> FINISH ALL </button>
-
-
-
-    </div>
 </div>
 </body>
 <script src="http://fabricjs.com/lib/fabric.js"></script>
