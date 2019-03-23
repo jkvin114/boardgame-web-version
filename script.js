@@ -15,7 +15,9 @@ var obsimglist=document.getElementById("obswrapper").children
 var hpindicator=$(".hpi").toArray()
 var otherhpfrms=$(".otherhpfrm").toArray()
 var otherhps=$(".otherhp").toArray()
-var dmgindicator=null
+var dmgindicator=[]
+var moneyindicator=[]
+var effectindicator=[]
 var thisturn=0
 var skilldmg=-1
 var skillcount=0
@@ -67,40 +69,37 @@ $(".addai").click(function(){
   CNUM+=1;
 
 })
-// $("#IndividualSelectpage button:nth-child(7)").click(
-//   function(){$("#IndividualSelectpage button:nth-child(7)").hide()
-//     $("#IndividualSelectpage div:nth-child(8)").show()}
-// )
-// $("#IndividualSelectpage button:nth-child(9)").click(
-//   function(){
-//     $("#IndividualSelectpage button:nth-child(9)").hide()
-//     $("#IndividualSelectpage div:nth-child(10)").show()}
-// )
-// $("#IndividualSelectpage button:nth-child(11)").click(
-//   function(){
-//     $("#IndividualSelectpage button:nth-child(11)").hide()
-//     $("#IndividualSelectpage div:nth-child(12)").show()}
-// )
+
+
 $("#FINISH").click(endgame)
 // 0 상점 1,2,3 돈 4덫 5강도 6포탑 7지뢰 8 칼 9열매
-// 10수면제 11마법수련 12욕심 13도둑 14물약 15마법성 16 거미줄
-//  17도박 18태풍 19눈덩이 20흡혈 21소매 22소환 23위치교환 24
-//  신손 25 연금 26 대출 27날강도 28날치기 29파산 30대피소 31방어막
-//   32대전자 33살인법 34 독거미줄 35 강포탑 36 양이성5 37양이성3
-//   38양이성 39방사능 40 썩은감자 41폭탄 42핵폭탄 43성지 44 방사는포탑
-//    45납치 46노예 47처형 48수용소 49전철 50카지노
+// 10수면제 11물약 12마법성 13 거미줄
+//  14도박 15도둑 16눈덩이 17흡혈 18소매 19소환 20위치교환 21
+//  신손 22 연금 23날강도 24대피소 25방어막
+//   26대전자 27살인법 28 독거미줄 29 썩은감자 30폭탄 31핵폭탄 32 방사능
+//    33납치 34노예 35수용소 36 태풍 37카지노 38사형재판
 const Map={
   "coordinates":
   [
+    // {x:46,y:41,obs:-1,money:0},
+    // {x:110,y:52,obs:1,money:1},
+    // {x:163,y:44,obs:1,money:2},
+    // {x:212,y:65,obs:2,money:5},
+    // {x:268,y:70,obs:4,money:0},
+    // {x:324,y:82,obs:3,money:10},
+    // {x:354,y:131,obs:4,money:0},
+    // {x:340,y:188,obs:9,money:0},
+    // {x:286,y:199,obs:4,money:0},
     {x:46,y:41,obs:-1,money:0},
-    {x:110,y:52,obs:1,money:1},
-    {x:163,y:44,obs:1,money:2},
-    {x:212,y:65,obs:2,money:5},
-    {x:268,y:70,obs:4,money:0},
-    {x:324,y:82,obs:3,money:10},
-    {x:354,y:131,obs:4,money:0},
-    {x:340,y:188,obs:9,money:0},
-    {x:286,y:199,obs:4,money:0},
+    {x:110,y:52,obs:13,money:1},
+    {x:163,y:44,obs:7,money:2},
+    {x:212,y:65,obs:7,money:5},
+    {x:268,y:70,obs:13,money:0},
+    {x:324,y:82,obs:7,money:10},
+    {x:354,y:131,obs:13,money:0},
+    {x:340,y:188,obs:13,money:0},
+    {x:286,y:199,obs:13,money:0},
+
     {x:238,y:190,obs:1,money:2},
     {x:180,y:163,obs:3,money:7},
     {x:129,y:172,obs:1,money:1},
@@ -109,98 +108,102 @@ const Map={
     {x:104,y:284,obs:2,money:5},
     {x:157,y:300,obs:3,money:8},
     {x:217,y:311,obs:0,money:0},
-    {x:280,y:333,obs:8,money:0},
-    {x:335,y:355,obs:14,money:0},
-    {x:356,y:406,obs:15,money:0},
-    {x:323,y:457,obs:10,money:0},
-    {x:272,y:448,obs:7,money:0},
-    {x:167,y:407,obs:-1,money:0},
-    {x:108,y:389,obs:-1,money:0},
-    {x:57,y:397,obs:-1,money:0},
-    {x:31,y:453,obs:-1,money:0},
-    {x:37,y:505,obs:-1,money:0},
-    {x:50,y:555,obs:-1,money:0},
-    {x:107,y:566,obs:-1,money:0},
-    {x:159,y:588,obs:-1,money:0},
-    {x:212,y:545,obs:-1,money:0},
-    {x:269,y:532,obs:-1,money:0},
-    {x:322,y:537,obs:-1,money:0},
-    {x:431,y:561,obs:-1,money:0},
-    {x:478,y:568,obs:-1},
-    {x:533,y:553,obs:-1},
-    {x:596,y:532,obs:-1},
-    {x:658,y:514,obs:-1},
-    {x:682,y:457,obs:-1},
-    {x:623,y:434,obs:-1},
-    {x:570,y:427,obs:-1},
-    {x:468,y:467,obs:-1},
-    {x:434,y:429,obs:-1},
-    {x:410,y:379,obs:-1},
-    {x:430,y:327,obs:-1},
-    {x:482,y:316,obs:-1},
-    {x:531,y:332,obs:-1},
-    {x:583,y:350,obs:-1},
-    {x:636,y:345,obs:-1},
-    {x:691,y:322,obs:-1},
-    {x:714,y:271,obs:-1},
-    {x:732,y:217,obs:-1},
-    {x:676,y:183,obs:-1},
-    {x:624,y:172,obs:-1},
-    {x:566,y:199,obs:-1},
-    {x:515,y:210,obs:-1},
-    {x:463,y:195,obs:-1},
-    {x:435,y:139,obs:-1},
-    {x:448,y:87,obs:-1},
-    {x:503,y:57,obs:-1},
-    {x:502,y:58,obs:-1},
-    {x:553,y:78,obs:-1},
-    {x:607,y:96,obs:-1},
-    {x:662,y:77,obs:-1},
-    {x:716,y:51,obs:-1},
-    {x:825,y:84,obs:-1},
-    {x:876,y:106,obs:-1},
-    {x:921,y:88,obs:-1},
-    {x:987,y:62,obs:-1},
-    {x:1018,y:119,obs:-1},
-    {x:1042,y:173,obs:-1},
-    {x:1018,y:222,obs:-1},
-    {x:965,y:209,obs:-1},
-    {x:919,y:194,obs:-1},
-    {x:860,y:210,obs:-1},
-    {x:813,y:223,obs:-1},
-    {x:789,y:276,obs:-1},
-    {x:837,y:300,obs:-1},
-    {x:891,y:291,obs:-1},
-    {x:946,y:281,obs:-1},
-    {x:995,y:294,obs:-1},
-    {x:1047,y:315,obs:-1},
-    {x:1041,y:364,obs:-1},
-    {x:980,y:376,obs:-1},
-    {x:929,y:375,obs:-1},
-    {x:875,y:368,obs:-1},
-    {x:824,y:361,obs:-1},
-    {x:773,y:377,obs:-1},
-    {x:750,y:432,obs:-1},
-    {x:801,y:456,obs:-1},
-    {x:854,y:440,obs:-1},
-    {x:907,y:449,obs:-1},
-    {x:961,y:461,obs:-1},
-    {x:1007,y:484,obs:-1},
-    {x:1035,y:530,obs:-1},
-    {x:982,y:563,obs:-1},
-    {x:931,y:547,obs:-1},
-    {x:876,y:538,obs:-1},
-    {x:824,y:538,obs:-1},
-    {x:750,y:546,obs:-1}
+    {x:280,y:333,obs:15,money:0},
+    {x:335,y:355,obs:5,money:0},
+    {x:356,y:406,obs:3,money:8},
+    {x:323,y:457,obs:1,money:2},
+    {x:272,y:448,obs:2,money:5},
+    {x:218,y:422,obs:2,money:6},
+    {x:167,y:407,obs:7,money:0},
+    {x:108,y:389,obs:9,money:0},
+    {x:57,y:397,obs:8,money:0},
+    {x:31,y:453,obs:2,money:6},
+    {x:37,y:505,obs:1,money:3},
+    {x:50,y:555,obs:8,money:0},
+    {x:107,y:566,obs:3,money:7},
+    {x:159,y:555,obs:2,money:6},
+    {x:212,y:545,obs:1,money:2},
+    {x:269,y:532,obs:13,money:0},
+    {x:322,y:537,obs:1,money:1},
+    {x:376,y:541,obs:5,money:0},
+    {x:431,y:561,obs:18,money:0},
+    {x:478,y:568,obs:17,money:0},
+    {x:533,y:553,obs:3,money:9},
+    {x:596,y:532,obs:0,money:0},
+    {x:658,y:514,obs:16,money:0},
+    {x:682,y:457,obs:2,money:4},
+    {x:623,y:434,obs:11,money:0},
+    {x:570,y:427,obs:12,money:0},
+    {x:520,y:452,obs:17,money:0},
+    {x:468,y:467,obs:2,money:5},
+    {x:414,y:429,obs:13,money:0},
+    {x:410,y:379,obs:21,money:0},
+    {x:430,y:327,obs:12,money:0},
+    {x:482,y:316,obs:18,money:0},
+    {x:531,y:332,obs:2,money:5},
+    {x:583,y:350,obs:16,money:0},
+    {x:636,y:345,obs:20,money:0},
+    {x:691,y:322,obs:19,money:0},
+    {x:714,y:271,obs:1,money:2},
+    {x:732,y:217,obs:3,money:8},
+    {x:676,y:183,obs:11,money:0},
+    {x:624,y:172,obs:12,money:0}, //casino begin
+    {x:566,y:199,obs:14,money:0},
+    {x:515,y:210,obs:22,money:0},
+    {x:463,y:195,obs:3,money:8},
+    {x:435,y:139,obs:3,money:9},
+    {x:448,y:87,obs:3,money:10},
+    {x:503,y:57,obs:2,money:6},
+    {x:502,y:58,obs:3,money:9},
+    {x:553,y:78,obs:3,money:8},
+    {x:607,y:96,obs:14,money:0},
+    {x:662,y:77,obs:22,money:0},
+    {x:716,y:51,obs:2,money:6},
+    {x:769,y:67,obs:2,money:5},
+    {x:825,y:84,obs:3,money:7},
+    {x:876,y:106,obs:2,money:4},
+    {x:921,y:88,obs:12,money:0},
+    {x:987,y:62,obs:0,money:0},
+    {x:1018,y:119,obs:18,money:0},
+    {x:1042,y:173,obs:21,money:0},
+    {x:1018,y:222,obs:10,money:0},
+    {x:965,y:209,obs:30,money:0},
+    {x:919,y:194,obs:28,money:0},
+    {x:860,y:210,obs:26,money:0},
+    {x:813,y:223,obs:12,money:0},
+    {x:789,y:276,obs:29,money:0},
+    {x:837,y:300,obs:10,money:0},
+    {x:891,y:291,obs:27,money:0},
+    {x:946,y:281,obs:29,money:0},
+    {x:995,y:294,obs:23,money:0},
+    {x:1047,y:315,obs:24,money:0},
+    {x:1035,y:363,obs:25,money:0},
+    {x:980,y:376,obs:21,money:0},
+    {x:929,y:375,obs:34,money:0},
+    {x:875,y:368,obs:11,money:0},
+    {x:824,y:361,obs:3,money:10},
+    {x:773,y:377,obs:26,money:0},
+    {x:750,y:432,obs:28,money:0},
+    {x:801,y:456,obs:23,money:0},
+    {x:854,y:440,obs:32,money:0},
+    {x:907,y:449,obs:27,money:0},
+    {x:961,y:461,obs:31,money:0},
+    {x:1007,y:484,obs:20,money:0},
+    {x:1035,y:530,obs:19,money:0},
+    {x:982,y:563,obs:35,money:0},
+    {x:931,y:547,obs:33,money:0},
+    {x:876,y:538,obs:23,money:0},
+    {x:824,y:538,obs:37,money:0},
+    {x:750,y:546,obs:-1,money:0}
   ],
-  "finish":101,
+  "finish":104,
   "muststop":[16,38,71,101],
   "respawn":[0,16,38,53,71]
 }
 
 
 const coordinates=Map.coordinates         //2d array of each position on board
-const finishPos=101           //num of finish position
+const finishPos=Map.finish           //num of finish position
 const muststop=Map.muststop
 const respawn=Map.respawn
 
@@ -219,10 +222,6 @@ function playIndividual()
     {
       $("#IndividualSelectpage button:nth-child("+String((2*i)+5)+")").css("display","block")
     }
-
-
-
-
     addPlayer()
 }
 function playTeam()
@@ -241,6 +240,7 @@ function addPlayer()
     {
         players.push(new Swordsman(i,false))
     }
+
 }
 
 function teamSelection()
@@ -308,13 +308,19 @@ $("#redteam > h2").css("margin","100px")
 }
 function startgame()
 {
+  if(PNUM+CNUM<=1){
+    alert("add more players")
+    return;
+  }
+
     if(!isTeam)
     {
-      for(var i=PNUM;i<4;++i)
+      for(var i=PNUM;i<PNUM+CNUM;++i)
       {
           players.push(new Swordsman(i,true))
       }
     }
+
     if(players.length>=3){
       $(otherhpfrms[1]).show()
       $(hpindicator[2]).show()
@@ -353,7 +359,7 @@ var ctx=document.getElementById("board").getContext('2d')
 
     })
     canvas.setBackgroundImage(board)
-    for(var i=0;i<21;++i)
+    for(var i=0;i<finishPos-1;++i)
     {
       var num=coordinates[i].obs
       var index=num;
@@ -382,7 +388,6 @@ function showObjects()
 {
     for(var i=0;i<obsimgs.length;++i)
     {
-      console.log(obsimgs[i])
       obsimgs[i].set({top:(coordinates[i].y),left:(coordinates[i].x)})
     }
 
@@ -444,35 +449,71 @@ function showObjects()
           canvas.add(p.scale(0.1))
           targetimgs.push(p)
 
+          var d = new fabric.Text("", {
+          fontSize: 40,fill:'#D81B60',
+          opacity:1,fontWeight: 'bold',
+          width:500,height:500,
+          lockMovementX: true, lockMovementY: true,
+          hasControls: false,
+          evented:false,
+          lockScalingX: true, lockScalingY:true,lockRotation: true,
+          originX: 'center',
+          originY: 'center',
+          top:100,left:100
+          });
+          canvas.add(d)
+          dmgindicator.push(d)
+
+
+          m = new fabric.Text("", {
+          fontSize: 40,fill:'orange',
+          opacity:1,fontWeight: 'bold',
+          width:500,height:500,
+          lockMovementX: true, lockMovementY: true,
+          hasControls: false,
+          evented:false,
+          lockScalingX: true, lockScalingY:true,lockRotation: true,
+          originX: 'center',
+          originY: 'center',
+          top:100,left:100
+          });
+          canvas.add(m)
+          moneyindicator.push(m)
+
+
     }
-    dmgindicator = new fabric.Text("", {
-    fontSize: 40,fill:'#D81B60',
-    opacity:1,fontWeight: 'bold',
-    width:500,height:500,
-    lockMovementX: true, lockMovementY: true,
-    hasControls: false,
-    evented:false,
-    lockScalingX: true, lockScalingY:true,lockRotation: true,
-    originX: 'center',
-    originY: 'center',
-    top:100,left:100
-});
-  canvas.add(dmgindicator)
+
+    for(var i=0;i<3;++i)
+    {
+        e = new fabric.Text("", {
+        fontSize: 50,fill:'purple',
+        opacity:1,fontWeight: 'bold',
+        width:500,height:500,
+        lockMovementX: true, lockMovementY: true,
+        hasControls: false,
+        evented:false,
+        lockScalingX: true, lockScalingY:true,lockRotation: true,
+        originX: 'center',
+        originY: 'center',
+        top:100,left:100
+        });
+        canvas.add(e)
+        effectindicator.push(e)
+    }
+
+
+
 }
 function nextTurn()
 {
+  console.log(players.length)
   hideSkillBtn()
   players[thisturn].coolDown3()
 
   thisturn+=1
   thisturn%=players.length
-  if(players[thisturn].effects[2]<=0)
-  {
-    showDiceBtn()
-  }
-  else {
-    //stun
-  }
+
+  showDiceBtn()
 }
 
 
@@ -502,9 +543,37 @@ function showDiceBtn()
 
   }
   players[thisturn].invulnerable=false
+  if(players[thisturn].effects[2]===0)
+  {
+    $("#dicebtn").attr("src","dice/1.png");
+    $("#dicebtn").show()
+  }
+  else
+  {
+    manageStun()
+  }
 
-  $("#dicebtn").show()
 }
+function manageStun()
+{
+  $("#dicebtn").attr("src","dice/stun.png");
+  $("#dicebtn").show()
+  setTimeout(function(){
+      $("#dicebtn").hide()
+      var p=players[thisturn]
+      p.coolDown1()
+      p.obstacle(0)
+      p.coolDown2()
+
+      //basicattack
+      skillcount=0
+      showSkillBtn()
+
+  },1000)
+}
+
+
+
 var dicecount=0
 function diceAnimation(){
     if(dicecount>10) return;
@@ -517,7 +586,7 @@ function diceAnimation(){
 }
 function throwDice()
 {
-
+  if(players[thisturn].effects[2]>0){return}
   canvas.renderAll()
   dicecount=0
     diceAnimation()
@@ -548,30 +617,29 @@ function movePlayer(dice,count,pos)
   });
   setTimeout(function(){return movePlayer(dice,count+1,pos)},100)
 }
-function tpPlayer(pos)
+function tpPlayer(target,pos)
 {
-  playerimgs[thisturn].set({opacity:1})
+  playerimgs[target].set({opacity:1})
   var x=coordinates[pos].x
   var y=coordinates[pos].y
-  playerimgs[thisturn].set({left:(x+diff[thisturn][0]),top:0})
+  playerimgs[target].set({left:(x+diff[target][0]),top:0})
 
-  playerimgs[thisturn].animate('top',(y+diff[thisturn][1]),{
+  playerimgs[target].animate('top',(y+diff[target][1]),{
     onChange: canvas.renderAll.bind(canvas),
     duration: 800,
     easing: fabric.util.ease.easeOutBounce
   });
 
 }
-function levitatePlayer()
+function levitatePlayer(target)
 {
-  playerimgs[thisturn].animate('top',0,{
+  playerimgs[target].animate('top',0,{
     onChange: canvas.renderAll.bind(canvas),
     duration: 500,
     easing: fabric.util.ease.easeInCubic
   });
-  setTimeout(function(){playerimgs[thisturn].set({opacity:0})},500)
-
-}
+  setTimeout(function(){playerimgs[target].set({opacity:0})},500)
+  }
 
 function afterDice(dice)
 {
@@ -585,14 +653,20 @@ function afterDice(dice)
       gameOver()
     }
     p.coolDown1()
-    //obstacle
 
-    p.coolDown2()
 
-    //basicattack
+    setTimeout(function()
+    {
+      p.obstacle(0)
+      p.coolDown2()
 
-    skillcount=0
-    showSkillBtn()
+      //basicattack
+      skillcount=0
+      showSkillBtn()
+    },dice*100)
+
+
+
 
 }
 function showTarget(targets)
@@ -631,16 +705,14 @@ function resetTarget()
 }
 function showSkillBtn()
 {
-
-  if(skillcount===4 || players[thisturn].effects[3]>0)
+  $("#nextturn").show()
+//  if(skillcount===4 || players[thisturn].effects[3]>0)
+  if(players[thisturn].effects[3]>0)
   {       //silent or used skill 4 times
-
-    hideSkillBtn()
-
-    nextTurn()
+    $("#noskill").show()
   }
   else {
-    $("#nextturn").show()
+
     $("#skillbtns p").show()
   }
 
@@ -649,6 +721,7 @@ function hideSkillBtn()
 {
   $("#skillbtns p").hide()
   $("#nextturn").hide()
+  $("#noskill").hide()
 }
 function chooseSkill1()   //Q
 {
@@ -732,32 +805,121 @@ function animateHP(target,hp,maxhp,change)
   }
   var x=playerimgs[target].get('left')
   var y=playerimgs[target].get('top')
-  dmgindicator.set({top:(y),left:x,opacity:1})
+  dmgindicator[target].set({top:(y),left:x,opacity:1})
   if(change<0){
-    dmgindicator.set({fill:'#ff0000'})
-    dmgindicator.set('text',String(change))
+    dmgindicator[target].set({fill:'#ff0000'})
+    dmgindicator[target].set('text',String(change))
 
   }
   else
   {
-    dmgindicator.set('fill','#00ff14')
-    dmgindicator.set('text',('+'+String(change)))
+    dmgindicator[target].set('fill','#00ff14')
+    dmgindicator[target].set('text',('+'+String(change)))
   }
-  dmgindicator.animate('opacity',0,{
+  dmgindicator[target].animate('opacity',0,{
     onChange: canvas.renderAll.bind(canvas),
-    duration: 2000,
+    duration: 3000,
     easing: fabric.util.ease.easeOutCubic
   });
-  dmgindicator.animate('top',(y-50),{
+  dmgindicator[target].animate('top',(y-50),{
     onChange: canvas.renderAll.bind(canvas),
-    duration: 2000,
+    duration: 3000,
+    easing: fabric.util.ease.easeOutCubic
+  });
+}
+function indicateMoney(target,money){
+  var x=playerimgs[target].get('left')
+  var y=playerimgs[target].get('top')
+  moneyindicator[target].set({top:(y),left:x,opacity:1})
+
+
+  if(money<0){
+    moneyindicator[target].set({fill:'purple'})
+    moneyindicator[target].set('text',String(money)+" gold")
+
+  }
+  else
+  {
+    moneyindicator[target].set('fill','orange')
+    moneyindicator[target].set('text',('+'+String(money)+" gold"))
+  }
+  moneyindicator[target].animate('opacity',0,{
+    onChange: canvas.renderAll.bind(canvas),
+    duration: 3000,
+    easing: fabric.util.ease.easeOutCubic
+  });
+  moneyindicator[target].animate('top',(y-50),{
+    onChange: canvas.renderAll.bind(canvas),
+    duration: 3000,
     easing: fabric.util.ease.easeOutCubic
   });
 
+}
+function indicateEffect(target,effect,num)
+{
+  var x=playerimgs[target].get('left')
+  var y=playerimgs[target].get('top')
+  var e=""
+  switch(effect)
+  {
+    case 0:
+      e="SLOW!"
+      effectindicator[num].set({fill:'blue'})
+    break;
+    case 1:
+      e="SPEED!"
+      effectindicator[num].set({fill:'blue'})
+    break;
+    case 2:
+      e="STUN!"
+      effectindicator[num].set({fill:'purple'})
+    break;
+    case 3:
+      e="SILENT!"
+      effectindicator[num].set({fill:'purple'})
+    break;
+    case 4:
+      e="SHIELD!"
+      effectindicator[num].set({fill:'green'})
+    break;
+    case 5:
+      e="POISON!"
+      effectindicator[num].set({fill:'green'})
+    break;
+    case 6:
+      e="RADIATION!"
+      effectindicator[num].set({fill:'green'})
+    break;
+    case 7:
+      e="ANNUITY!"
+      effectindicator[num].set({fill:'green'})
+    break;
+    case 8:
+      e="SLAVED!"
+      effectindicator[num].set({fill:'red'})
+    break;
+
+  }
+
+
+
+
+  effectindicator[num].set({top:(y-50-(num*50)),left:(x-50),opacity:1})
+  effectindicator[num].set('text',e)
+
+  effectindicator[num].animate('opacity',0,{
+    onChange: canvas.renderAll.bind(canvas),
+    duration: 3000,
+    easing: fabric.util.ease.easeOutCubic
+  });
+  effectindicator[num].animate('top','-=50',{
+    onChange: canvas.renderAll.bind(canvas),
+    duration: 3000,
+    easing: fabric.util.ease.easeOutCubic
+  });
 
 
 }
-
 
 
 

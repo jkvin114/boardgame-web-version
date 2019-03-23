@@ -10,7 +10,10 @@ function decrement(val)
   return Math.max(val-1,0)
 }
 
-
+function distance(p1,p2)
+{
+  return Math.abs(p1.pos-p2.pos)
+}
 
 function player(turn,AI,char)
 {
@@ -28,9 +31,12 @@ function player(turn,AI,char)
     this.assist=0;
     this.hpframenum=0;       //0 if using mainframe, 1~3:otherframe
     this.invulnerable=false;
+    this.nextdmg=0;
+    this.adamage=0;
+
     this.HP=200;
     this.MaxHP=200;
-    this.AD=100;
+    this.AD=0;
     this.AP=0;
     this.AR=0;
     this.MR=0;
@@ -43,6 +49,7 @@ function player(turn,AI,char)
     this.duration=[0,0,0]
     this.effects=[0,0,0,0,0,0,0,0]
       //0.slow 1.speed 2.stun 3.silent 4. shield  5.poison  6.radi  7.annuity 8.slave
+    this.stun=0
     this.skilleffects=[[0,-1],[0,-1]]
     //0.blind,skill user`s turn   1.mushroom[dur,skill user`s turn]
     this.stats=[0,0,0,0,0,0,0]
@@ -77,6 +84,7 @@ function player(turn,AI,char)
     }
     this.coolDown2=function()
     {
+      if(this.effects[2]===0){this.stun=false}
       this.duration=this.duration.map(decrement)
 
     }
@@ -89,6 +97,7 @@ function player(turn,AI,char)
 
     this.move=function(di)
     {
+      this.giveAdmg()
       var end=movePlayer(di,1,this.pos)
       if(end||this.pos+1>=finishPos) {return true}
 
@@ -99,10 +108,12 @@ function player(turn,AI,char)
 
     this.goto=function(pos)
     {
+      this.giveAdmg()
       if(pos>finishPos){gameOver()}
-      levitatePlayer()
+      var t=this.turn;
+      levitatePlayer(t)
 
-      setTimeout(function(){tpPlayer(pos)},700)
+      setTimeout(function(){tpPlayer(t,pos)},700)
 
       this.lastpos=this.pos
       this.pos=pos;
@@ -111,9 +122,12 @@ function player(turn,AI,char)
     {
       return this.pos<other.pos
     }
-    this.resetCooltime=function()
+    this.resetCooltime=function(list)
     {
-      this.cooltime=[0,0,0]
+      for(var i of list)
+      {
+        this.cooltime[i]=0
+      }
     }
 
     this.changemoney=function(m,type)
@@ -122,17 +136,18 @@ function player(turn,AI,char)
       {
         case 0://money earned
           this.stats[3]+=m
+          indicateMoney(this.turn,m)
         break;
         case 1://money spend
           this.stats[4]+=(-1*m)
         break;
         case 2://money taken
           this.stats[5]+=(-1*m)
+          indicateMoney(this.turn,m)
         break;
 
       }
       this.money+=m
-
     }
     this.changehealth=function(hp,maxhp)
     { if(hp>0){this.stats[1]+=hp}
@@ -141,11 +156,195 @@ function player(turn,AI,char)
       this.HP=Math.min(this.HP+hp,this.MaxHP)
       animateHP(this.turn,this.HP,this.MaxHP,hp)
     }
-
     this.changeshield=function(shield)
     {
       this.shield+=shield
     }
+    this.giveAdmg=function()
+    {
+      if(this.nextdmg!==0)
+      {
+        this.giveDamage(this.nextdmg,-1)
+        this.nextdmg=0
+      }
+    }
+    this.obstacle=function(rec)
+    {
+      var obs=coordinates[this.pos].obs
+      var turn=this.turn;
+      var others=players.filter(function(a){return turn!==a.turn})
+      if(this.stun){return 'stun'}
+      if(obs===-1){return 'finish'}
+      if(obs===0){
+        //this.store()
+        return 'store'
+      }
+
+      if(obs===1||obs===2||obs===3)
+      {
+        this.giveMoney(coordinates[this.pos].money*10)
+      }
+      switch(obs)
+      {
+        case 4:
+        this.giveDamage(10,-1)
+        break
+        case 5:
+        this.takeMoney(30)
+        break;
+        case 7:
+        this.nextdmg=20
+        break
+        case 8:
+        this.giveDamage(20,-1)
+        break
+        case 9:
+        this.heal(50)
+        break
+        case 10:
+        this.giveEffect('silent',1,0)
+        break;
+        case 11:
+        this.resetCooltime([0,1,2])
+        break;
+        case 12:
+        this.adamage=30;
+        break
+        case 13:
+        this.giveEffect('stun',1,0)
+        break
+        case 14:
+        var d=Math.floor(Math.random()*6)+1
+        this.giveMoney(d)
+        break;
+        case 15:
+        this.thief()
+        break;
+        case 16:
+        this.giveEffect('slow',1,0)
+        this.giveDamage(20,-1)
+        break;
+        case 17:
+          this.giveDamage(20*others.length,-1)
+          for(var o of others)
+          {
+            o.heal(20);
+          }
+          break;
+        case 18:
+          this.takeMoney(30*others.length,-1)
+          for(var o of others)
+          {
+            o.giveMoney(30);
+          }
+          break;
+        case 19:
+          for(var o of others)
+          {
+            o.goto(this.pos);
+          }
+          break
+        case 20:
+          var target=this.nearestplayer()
+          console.log(target)
+          var pos=this.pos
+          this.goto(target.pos)
+          target.goto(pos)
+          break
+        case 21:
+        break
+        case 22:
+        this.giveEffect('annuity',99999,0)
+        break;
+        case 23:
+        this.takeMoney(30)
+        this.giveDamage(30,-1)
+        break;
+        case 24:
+        this.giveEffect('shield',99999,0)
+        this.heal(70)
+        break;
+        case 25:
+        this.giveEffect('shield',99999,0)
+        break;
+        case 26:
+        this.nextdmg=70
+        break;
+        case 27:
+        this.giveDamage(100,-1)
+        break;
+        case 28:
+        this.giveEffect('stun',1,0)
+        this.giveEffect('slow',2,1)
+        break;
+        case 29:
+        this.giveEffect('poison',99999,0)
+        break;
+        case 30:
+        this.giveDamage(Math.floor(this.HP/3))
+        break;
+        case 31:
+        this.giveDamage(Math.floor((this.MaxHP-this.HP)/2))
+        break;
+        case 32:
+        this.giveEffect('radi',2,0)
+        break;
+        case 33:
+        var kidnap=confirm("Yes for 2 turn stun \n Cancel for HP -150")
+        if(kidnap==true){this.giveEffect('stun',2,0)}
+        else{this.giveDamage(150,-1)}
+        break;
+        case 34:
+        this.giveEffect('slave',99999,0)
+        break;
+        case 35:
+        this.giveEffect('stun',3,0)
+        this.giveEffect('speed',4,1)
+        break;
+        case 36:
+        break;
+
+
+      }
+
+
+
+    }
+    this.thief=function(){}
+    this.nearestplayer=function()
+    {
+      var dist=200
+      var target=null;
+      for(var p of players)
+      {
+        if(p!==this&&distance(this,p)<dist)
+        {
+          target=p
+          dist=distance(this,p)
+        }
+      }
+      return target;
+    }
+
+    this.giveEffect=function(e,dur,num)
+    {
+      var effect=0;
+      var effectstring=['slow','speed','stun','silent','shield','poison','radi','annuity','slave']
+      for(var i=0;i<effectstring.length;++i)
+      {
+        if(e===effectstring[i])
+        {
+          effect=i
+        }
+      }
+      this.effects[effect]=dur
+      if(effect===2){this.stun=true}
+
+      indicateEffect(this.turn,effect,num)
+
+
+    }
+
     this.giveMoney=function(m)
     {
       this.changemoney(m,0)
@@ -182,13 +381,13 @@ function player(turn,AI,char)
     }
     this.giveDamage=function(damage,skillfrom)
     {
-      if(this.invulnerable){return false}
+      if(this.invulnerable||damage===0){return false}
       var died=false;
 
       if(this.effects[6]>0){damage*=2;}
       if(damage<=1&&skfrom<0){damage=1;}
 
-      this.damagedby[skillfrom]=3
+      if(skillfrom>=0) {this.damagedby[skillfrom]=3}
 
 
       damage-=this.shield
@@ -209,8 +408,11 @@ function player(turn,AI,char)
         this.effects.map(function(x){return 0;})
         this.duration.map(function(x){return 0;})
         this.invulnerable=true
-        players[skillfrom].addKill()
-        var assists=this.assist()
+        if(skillfrom>=0)
+        {
+          players[skillfrom].addKill()
+          var assists=this.assist()
+        }
       }
       return died
 
