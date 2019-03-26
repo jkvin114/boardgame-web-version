@@ -10,18 +10,28 @@ var redteams=[]
 var blueteams=[]
 var playerimgs=[]
 var targetimgs=[]
-var obsimgs=[]
+var tiles=[]
+var tilehover=null
 var obsimglist=document.getElementById("obswrapper").children
+var tilelist=document.getElementById("tilewrapper").children
 var hpindicator=$(".hpi").toArray()
 var otherhpfrms=$(".otherhpfrm").toArray()
 var otherhps=$(".otherhp").toArray()
 var dmgindicator=[]
 var moneyindicator=[]
 var effectindicator=[]
+var activetiles=[]
 var thisturn=0
 var skilldmg=-1
 var skillcount=0
+var godhandtarget=-1
 var diff=[[4,7],[4,-7],[-17,7],[-17,-7]]
+var shadow=new fabric.Image(document.getElementById("shadow"),{
+    left:0,top:0,
+    lockMovementX: true, lockMovementY: true,visible:false,
+    hasControls: false,hasBorders:false,evented:false,
+    lockScalingX: true, lockScalingY:true,lockRotation: true,
+})
 $("#dropdown a:nth-child(1)").click(
   function(){
     PNUM=1
@@ -49,6 +59,11 @@ $(".confirm").click(startgame)
 $("#dicebtn").click(throwDice)
 $("#nextturn").click(nextTurn)
 $("#skillcancel").click(resetTarget)
+$("#projectilecancel").click(function(){
+  tileReset()
+  showSkillBtn()
+})
+
 $("#skillbtns p:nth-child(1)").click(chooseSkill1)
 $("#skillbtns p:nth-child(2)").click(chooseSkill2)
 $("#skillbtns p:nth-child(3)").click(chooseSkill3)
@@ -90,16 +105,20 @@ const Map={
     // {x:354,y:131,obs:4,money:0},
     // {x:340,y:188,obs:9,money:0},
     // {x:286,y:199,obs:4,money:0},
-    {x:46,y:41,obs:-1,money:0},
-    {x:110,y:52,obs:13,money:1},
-    {x:163,y:44,obs:7,money:2},
-    {x:212,y:65,obs:7,money:5},
-    {x:268,y:70,obs:13,money:0},
-    {x:324,y:82,obs:7,money:10},
-    {x:354,y:131,obs:13,money:0},
-    {x:340,y:188,obs:13,money:0},
-    {x:286,y:199,obs:13,money:0},
 
+
+
+
+
+    {x:46,y:41,obs:-1,money:0},
+    {x:110,y:52,obs:5,money:1},
+    {x:163,y:44,obs:18,money:2},
+    {x:212,y:65,obs:5,money:5},
+    {x:268,y:70,obs:18,money:0},
+    {x:324,y:82,obs:5,money:10},
+    {x:354,y:131,obs:21,money:0},
+    {x:340,y:188,obs:21,money:0},
+    {x:286,y:199,obs:21,money:0},    //
     {x:238,y:190,obs:1,money:2},
     {x:180,y:163,obs:3,money:7},
     {x:129,y:172,obs:1,money:1},
@@ -184,7 +203,7 @@ const Map={
     {x:824,y:361,obs:3,money:10},
     {x:773,y:377,obs:26,money:0},
     {x:750,y:432,obs:28,money:0},
-    {x:801,y:456,obs:23,money:0},
+    {x:801,y:456,obs:36,money:0},
     {x:854,y:440,obs:32,money:0},
     {x:907,y:449,obs:27,money:0},
     {x:961,y:461,obs:31,money:0},
@@ -192,13 +211,13 @@ const Map={
     {x:1035,y:530,obs:19,money:0},
     {x:982,y:563,obs:35,money:0},
     {x:931,y:547,obs:33,money:0},
-    {x:876,y:538,obs:23,money:0},
+    {x:876,y:538,obs:36,money:0},
     {x:824,y:538,obs:37,money:0},
     {x:750,y:546,obs:-1,money:0}
   ],
-  "finish":104,
-  "muststop":[16,38,71,101],
-  "respawn":[0,16,38,53,71]
+  "finish":103,
+  "muststop":[0,16,38,72,103],
+  "respawn":[0,16,38,56,72]
 }
 
 
@@ -214,11 +233,11 @@ function playIndividual()
 
     $('#IndividualSelectpage').fadeIn(1000)
     $("#Mainpage").hide()
-    for(var i=0;i<PNUM;++i)
+    for(let i=0;i<PNUM;++i)
     {
       $("#IndividualSelectpage div:nth-child("+String(i+1)+")").show()
     }
-    for(var i=3;i>=PNUM;--i)
+    for(let i=3;i>=PNUM;--i)
     {
       $("#IndividualSelectpage button:nth-child("+String((2*i)+5)+")").css("display","block")
     }
@@ -236,7 +255,7 @@ function playTeam()
 }
 function addPlayer()
 {
-    for(var i=0;i<PNUM;++i)
+    for(let i=0;i<PNUM;++i)
     {
         players.push(new Swordsman(i,false))
     }
@@ -247,7 +266,7 @@ function teamSelection()
 {
     if(PNUM<4) {$("#Selectpage h2").html(4-PNUM+" Computers are added to make teams")}
     CNUM=4-PNUM
-    for(var i=PNUM;i<4;++i)
+    for(let i=PNUM;i<4;++i)
     {
         players.push(new Swordsman(i,true))
     }
@@ -286,19 +305,19 @@ function setup()
     $('#TeamCheckpage').fadeIn(1000)
     $('#TeamCheckpage').css("display","grid")
     $("#Selectpage").hide()
-    for(var i=0;i<4;++i)
+    for(let i=0;i<4;++i)
     {
         if(players[i].team===1)
         {redteams.push(players[i])}
         else
         {blueteams.push(players[i])}
     }
-    for(var i=0;i<redteams.length;++i)
+    for(let i=0;i<redteams.length;++i)
     {
         if(redteams[i].AI) {$("#redteam").append("<h2> (Computer)"+(redteams[i].turn+1) +"P </h2>")}
         else {$("#redteam").append("<h2>"+(redteams[i].turn+1) +"P </h2>")}
     }
-    for(var i=0;i<blueteams.length;++i)
+    for(let i=0;i<blueteams.length;++i)
     {
         if(blueteams[i].AI) {$("#blueteam").append("<h2> (Computer)"+(blueteams[i].turn+1) +"P </h2>")}
         else {$("#blueteam").append("<h2>"+(blueteams[i].turn+1) +"P </h2>")}
@@ -315,7 +334,7 @@ function startgame()
 
     if(!isTeam)
     {
-      for(var i=PNUM;i<PNUM+CNUM;++i)
+      for(let i=PNUM;i<PNUM+CNUM;++i)
       {
           players.push(new Swordsman(i,true))
       }
@@ -340,7 +359,31 @@ function startgame()
 
 
 }
-
+function chooseTile(index)
+{
+  let tile=0
+  if(index>0&&index<16)
+  {
+    tile=index%2
+  }
+  else if(index>16&&index<38)
+  {
+    tile=2+(index%3)
+  }
+  else if(index>38&&index<54)
+  {
+    tile=5+(index%2)
+  }
+  else if(index>=54&&index<72)
+  {
+    tile=7
+  }
+  else if(index>72)
+  {
+    tile=8+(index%2)
+  }
+  return tile
+}
 
 
 function drawboard()
@@ -359,43 +402,61 @@ var ctx=document.getElementById("board").getContext('2d')
 
     })
     canvas.setBackgroundImage(board)
-    for(var i=0;i<finishPos-1;++i)
+    for(let i=0;i<finishPos;++i)
     {
-      var num=coordinates[i].obs
-      var index=num;
-      if(num===-1){index=0}         //-1,0
+      let index=coordinates[i].obs
+    //  let index=num;
+      if(index===-1||index===0){
+        tiles.push(null)
+        continue
+      }         //-1,0
 
-      var img=obsimglist.item(index)
-      //$(obsimglist[index])
+      let img=obsimglist.item(index)
 
-      var o=new fabric.Image(img,{
+      let o=new fabric.Image(img,{
+        originX: 'center',
+        originY: 'center'
+      })
+      let tile=tilelist.item(chooseTile(i))
 
-        lockMovementX: true,lockMovementY: true,
-        hasControls: false,hasBorders:false,evented:false,
-        lockScalingX: true,lockScalingY:true,lockRotation: true,
+      let t=new fabric.Image(tile,{
         originX: 'center',
         originY: 'center'
       })
       o.scale(0.3)
-      canvas.add(o)
-      obsimgs.push(o)
+      let group=new fabric.Group([t,o],{
+        lockMovementX: true,lockMovementY: true,
+        hasControls: false,hasBorders:false,evented:false,
+        lockScalingX: true,lockScalingY:true,lockRotation: true,
+        originX: 'center',
+        originY: 'center',
+      })
+
+      canvas.add(group)
+      tiles.push(group)
+      group.sendToBack()
+
     }
-    showObjects()
+     canvas.add(shadow)
+     shadow.bringForward()
+     showObjects()
 
 }
 
 function showObjects()
 {
-    for(var i=0;i<obsimgs.length;++i)
+
+    for(let i=0;i<tiles.length;++i)
     {
-      obsimgs[i].set({top:(coordinates[i].y),left:(coordinates[i].x)})
+      if(tiles[i]===null) {continue}
+      tiles[i].set({top:(coordinates[i].y),left:(coordinates[i].x)})
     }
 
     canvas.renderAll()
 
-    for(var i=0;i<players.length;++i)
+    for(let i=0;i<players.length;++i)
     {
-      var p=new fabric.Image(document.getElementById("playerimg"),{
+      let p=new fabric.Image(document.getElementById("playerimg"),{
           left:(coordinates[0].x+diff[i][0]),top:(coordinates[0].y+diff[i][1]),width:300,height:400,
           lockMovementX: true, lockMovementY: true,
           hasControls: false,hasBorders:false,evented:false,
@@ -403,15 +464,15 @@ function showObjects()
           originX: 'center',
           originY: 'center'
 
-
       })
 
       canvas.add(p.scale(0.13))
+      p.bringToFront();
       playerimgs.push(p)
     }
-    for(var i=0;i<players.length;++i)
+    for(let i=0;i<players.length;++i)
     {
-      var p=new fabric.Image(document.getElementById("targetimg"),
+      let p=new fabric.Image(document.getElementById("targetimg"),
         {opacity:0,
           width:500,height:500,
           lockMovementX: true, lockMovementY: true,
@@ -421,69 +482,49 @@ function showObjects()
           originX: 'center',
           originY: 'center'
         })
-        switch (i) {
-          case 0:
-          p.on('selected', function() {
-            targetLocked(0)
-          });
-            break;
-          case 1:
-          p.on('selected', function() {
-            targetLocked(1)
-          });
-            break;
-          case 2:
-          p.on('selected', function() {
-            targetLocked(2)
-          });
-            break;
-          case 3:
-          p.on('selected', function() {
-            targetLocked(3)
-          });
-            break;
-
-        }
 
 
-          canvas.add(p.scale(0.1))
-          targetimgs.push(p)
+        canvas.add(p.scale(0.1))
+        targetimgs.push(p)
+        p.bringToFront();
 
-          var d = new fabric.Text("", {
-          fontSize: 40,fill:'#D81B60',
-          opacity:1,fontWeight: 'bold',
-          width:500,height:500,
-          lockMovementX: true, lockMovementY: true,
-          hasControls: false,
-          evented:false,
-          lockScalingX: true, lockScalingY:true,lockRotation: true,
-          originX: 'center',
-          originY: 'center',
-          top:100,left:100
-          });
-          canvas.add(d)
-          dmgindicator.push(d)
+        let d = new fabric.Text("", {
+        fontSize: 40,fill:'#D81B60',
+        opacity:1,fontWeight: 'bold',
+        width:500,height:500,
+        lockMovementX: true, lockMovementY: true,
+        hasControls: false,
+        evented:false,
+        lockScalingX: true, lockScalingY:true,lockRotation: true,
+        originX: 'center',
+        originY: 'center',
+        top:100,left:100
+        });
+        canvas.add(d)
+        d.bringToFront();
+        dmgindicator.push(d)
 
 
-          m = new fabric.Text("", {
-          fontSize: 40,fill:'orange',
-          opacity:1,fontWeight: 'bold',
-          width:500,height:500,
-          lockMovementX: true, lockMovementY: true,
-          hasControls: false,
-          evented:false,
-          lockScalingX: true, lockScalingY:true,lockRotation: true,
-          originX: 'center',
-          originY: 'center',
-          top:100,left:100
-          });
-          canvas.add(m)
-          moneyindicator.push(m)
+        let m = new fabric.Text("", {
+        fontSize: 40,fill:'orange',
+        opacity:1,fontWeight: 'bold',
+        width:500,height:500,
+        lockMovementX: true, lockMovementY: true,
+        hasControls: false,
+        evented:false,
+        lockScalingX: true, lockScalingY:true,lockRotation: true,
+        originX: 'center',
+        originY: 'center',
+        top:100,left:100
+        });
+        canvas.add(m)
+        m.bringToFront();
+        moneyindicator.push(m)
 
 
     }
 
-    for(var i=0;i<3;++i)
+    for(let i=0;i<3;++i)
     {
         e = new fabric.Text("", {
         fontSize: 50,fill:'purple',
@@ -498,6 +539,7 @@ function showObjects()
         top:100,left:100
         });
         canvas.add(e)
+        canvas.moveTo(e, 1);
         effectindicator.push(e)
     }
 
@@ -506,7 +548,6 @@ function showObjects()
 }
 function nextTurn()
 {
-  console.log(players.length)
   hideSkillBtn()
   players[thisturn].coolDown3()
 
@@ -528,7 +569,7 @@ function showDiceBtn()
 
 
   var j=0;
-  for(var i=0;i<players.length;++i)
+  for(let i=0;i<players.length;++i)
   {
 
     if(i!==thisturn)
@@ -561,6 +602,7 @@ function manageStun()
   setTimeout(function(){
       $("#dicebtn").hide()
       var p=players[thisturn]
+      p.checkProjectile()
       p.coolDown1()
       p.obstacle(0)
       p.coolDown2()
@@ -571,8 +613,6 @@ function manageStun()
 
   },1000)
 }
-
-
 
 var dicecount=0
 function diceAnimation(){
@@ -586,6 +626,7 @@ function diceAnimation(){
 }
 function throwDice()
 {
+
   if(players[thisturn].effects[2]>0){return}
   canvas.renderAll()
   dicecount=0
@@ -652,11 +693,15 @@ function afterDice(dice)
     if(END) {
       gameOver()
     }
+
+
+
     p.coolDown1()
 
 
     setTimeout(function()
     {
+      p.checkProjectile()
       p.obstacle(0)
       p.coolDown2()
 
@@ -669,14 +714,19 @@ function afterDice(dice)
 
 
 }
-function showTarget(targets)
+function showTarget(targets,godhand)
 {
+  hideSkillBtn()
+  //if(!godhand) {
   $("#skillcancel").show()
-  for(var t of targets)
+  canvas.discardActiveObject()
+  for(let t of targets)
   {
     var tr=t.turn
     var x=playerimgs[tr].get('left')
     var y=playerimgs[tr].get('top')
+    var tL= () => targetLocked(tr,godhand)
+    targetimgs[tr].on('selected',tL);
     targetimgs[tr].set({left:x,top:y,opacity:1,scaleY:2,visible:true})
     targetimgs[tr].animate('scaleY',0.1,{
       onChange: canvas.renderAll.bind(canvas),
@@ -690,9 +740,10 @@ function showTarget(targets)
 }
 function resetTarget()
 {
-  for(var t of targetimgs)
+  for(let t of targetimgs)
   {
     t.set({hasBorders:false,visible:false} )
+    t.off()
     t.animate('scaleY',0.16,{
       onChange: canvas.renderAll.bind(canvas),
       duration: 100,
@@ -727,7 +778,6 @@ function chooseSkill1()   //Q
 {
 
     getSkill(1)
-    showSkillBtn()
 }
 function chooseSkill2()     //W
 {
@@ -737,9 +787,9 @@ function chooseSkill2()     //W
   }
   else
   {
-
+    showSkillBtn()
   }
-  showSkillBtn()
+
 }
 function chooseSkill3()      //R
 {
@@ -749,9 +799,9 @@ function chooseSkill3()      //R
   }
   else
   {
-
+    showSkillBtn()
   }
-  showSkillBtn()
+
 }
 function getSkill(s)
 {
@@ -762,24 +812,56 @@ function getSkill(s)
 
     showSkillBtn()
   }
-  else if(skilldmg===0){        //non-target
+
+  else if(skilldmg===0){        //non-attack skill
     skillcount+=1
     showSkillBtn()
   }
-  else {
+  else if(skilldmg.nontarget)      //projectile
+  {
+    skillcount+=1
+    chooseLocation(p.pos,skilldmg.proj.skillrange,false)
+  }
+  else {                           //targeting skill
     skillcount+=1
     players[thisturn].chooseTarget(skilldmg.range,s)
 
   }
 }
-function targetLocked(target)
-{   var p=players[thisturn]
-    skilldmg.func(target)
+//proj: Projectile object
+function chooseLocation(pos,range,godhand)
+{
+  hideSkillBtn()
+  if(godhand){$("#godhandcancel").show()}
+  else{$("#projectilecancel").show()}
+  let p=players[thisturn]
+  canvas.bringToFront(shadow)
+  canvas.discardActiveObject()
+  shadow.set({visible:true})
 
-    var died=p.hitOneTarget(target,skilldmg,p.turn,skilldmg.skill)
-  //  skilldmg=-1
+  for(let i=pos-(range/2+1);i<pos+(range/2+1);++i)
+  {
+    liftTile(i,godhand)
+  }
+  playersToFront()
 
-    resetTarget()
+}
+function targetLocked(target,godhand)
+{
+    if(godhand)
+    {
+      chooseLocation(players[target].pos,10,true)
+      godhandtarget=players[target]
+      resetTarget()
+    }
+    else {
+      var p=players[thisturn]
+      skilldmg.func(target)
+      resetTarget()
+      var died=p.hitOneTarget(target,skilldmg,p.turn,skilldmg.skill)
+    //  skilldmg=-1
+
+    }
 
 }
 function animateHP(target,hp,maxhp,change)
@@ -832,11 +914,10 @@ function indicateMoney(target,money){
   var y=playerimgs[target].get('top')
   moneyindicator[target].set({top:(y),left:x,opacity:1})
 
-
-  if(money<0){
+  if(money<0)
+  {
     moneyindicator[target].set({fill:'purple'})
     moneyindicator[target].set('text',String(money)+" gold")
-
   }
   else
   {
@@ -921,15 +1002,81 @@ function indicateEffect(target,effect,num)
 
 }
 
+function liftTile(index,godhand)
+{
+  if(tiles[index]===null||index>=tiles.length||index<0) {return}
+  activetiles.push(index)
 
 
+  var select= () => tileSelected(index,godhand)
+  tiles[index].on('selected',select)
+  // var hover= function(){
+  //   tilehover.set({left:coordinates[index].x,top:coordinates[index].y,visible:true})
+  //   console.log(index)
+  //   canvas.renderAll()
+  // }
+  // var dehover= function(){
+  //   tilehover.set({visible:false})
+  //   canvas.renderAll()
+  // }
+
+//  tiles[index].on('mouse:over',hover)
+  //tiles[index].on('mouse:out',dehover)
+  tiles[index].set({hoverCursor:"pointer",evented:true})
+
+  tiles[index].bringToFront()
+
+  tiles[index].animate('top','-=10',{
+    onChange: canvas.renderAll.bind(canvas),
+    duration: 1000,
+    easing: fabric.util.ease.easeOutCubic
+  });
 
 
+}
+function tileSelected(index,godhand)
+{
+  if(tiles[index]===null||index>=tiles.length||index<0) {return}
 
-
-
-
-
+  tileReset()
+  if(godhand){
+    godhandtarget.goto(index,true)
+    godhandtarget=-1
+  }
+  else{
+    skilldmg.proj.placeProj(index)
+  }
+  showSkillBtn()
+}
+function tileReset()
+{
+  $("#projectilecancel").hide()
+  canvas.discardActiveObject()
+  playersToFront()
+  for(var t of activetiles)
+  {
+    tiles[t].off()
+    tiles[t].sendToBack()
+    tiles[t].set({hoverCursor:"defalut",evented:false})
+    tiles[t].animate('top','+=10',{
+      onChange: canvas.renderAll.bind(canvas),
+      duration: 1000,
+      easing: fabric.util.ease.easeOutCubic
+    });
+  }
+  shadow.set({visible:false})
+  shadow.sendToBack()
+  canvas.renderAll()
+  activetiles=[]
+}
+function playersToFront()
+{
+  for(var p of playerimgs)
+  {
+    p.bringToFront()
+  }
+  canvas.renderAll()
+}
 
  //   1. dice
  //  2.projectile

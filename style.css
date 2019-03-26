@@ -281,7 +281,7 @@
 			background-color: white;
 			color:black;
     }
-		#skillcancel{
+		.cancelbtn{
 			position:absolute;
 
 			padding:30px 40px;

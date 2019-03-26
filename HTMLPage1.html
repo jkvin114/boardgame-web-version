@@ -195,7 +195,8 @@
     <div id="boardside" class="dragscroll" >
         <button class='enlarge'> + </button>
         <button class='shrink'> - </button>
-				<p id="skillcancel" class="hidden"> Cancel </p>
+				<p id="skillcancel" class="hidden cancelbtn"> Cancel </p>
+        <p id="projectilecancel" class="hidden cancelbtn"> Cancel </p>
 				<div id="smallhpframe" class="hidden">
           <span id="smallhp">
           </span>
@@ -208,9 +209,23 @@
           <span id="smallhp">
           </span>
         </div>
-        <img class="hidden" src='board.png' id="boardimg" z-index="-1">
+        <img class="hidden" src='emptyboard.png' id="boardimg" z-index="-1">
+        <img class="hidden" src='shadow.png' id="shadow">
+        <img class="hidden" src='boardtile/select.png' id="tilehover">
         <img class="hidden" src='player.png' id="playerimg" z-index="1">
 				<img class="hidden" src='target.png' id="targetimg" z-index="1">
+        <div id="tilewrapper" class="hidden">
+          <img src="boardtile/green.png">
+          <img src="boardtile/lime.png">
+          <img src="boardtile/lightblue.png">
+          <img src="boardtile/blue.png">
+          <img src="boardtile/purple.png">
+          <img src="boardtile/yellow.png">
+          <img src="boardtile/orange.png">
+          <img src="boardtile/gold.png">
+          <img src="boardtile/red.png">
+          <img src="boardtile/darkpurple.png">
+        </div>
 				<div id="obswrapper" class="hidden">
 					<img src='obstacle/0.png'>
 					<img src='obstacle/1.png'>
@@ -260,6 +275,7 @@
 <script src="http://fabricjs.com/lib/fabric.js"></script>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script type="text/javascript" src="https://cdn.rawgit.com/asvd/dragscroll/master/dragscroll.js"></script>
+<script src="Projectile.js"></script>
 <script src="player.js"></script>
 <script src="Bird.js"></script>
 <script src="Swordsman.js"></script>

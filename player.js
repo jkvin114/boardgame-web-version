@@ -5,16 +5,22 @@ function upperlimit(val,lim)
   else{return val}
 
 }
-function decrement(val)
-{
-  return Math.max(val-1,0)
-}
 
-function distance(p1,p2)
-{
-  return Math.abs(p1.pos-p2.pos)
-}
+var decrement= (val) => Math.max(val-1,0)
+var distance=(p1,p2) => Math.abs(p1.pos-p2.pos)
 
+function isAttackableCoordinate(c)
+{
+  if(coordinates[c].obs===-1||coordinates[c].obs===0)
+  {
+    return false
+  }
+  return true
+}
+function notThisTurn(turn)
+{
+  return players.filter((a) => turn!==a.turn)
+}
 function player(turn,AI,char)
 {
     this.AI=AI
@@ -80,7 +86,6 @@ function player(turn,AI,char)
       this.effects=this.effects.map(decrement)
       this.cooltime=this.cooltime.map(decrement)
 
-
     }
     this.coolDown2=function()
     {
@@ -106,15 +111,18 @@ function player(turn,AI,char)
       return false
     }
 
-    this.goto=function(pos)
+    this.goto=function(pos,obs)
     {
       this.giveAdmg()
-      if(pos>finishPos){gameOver()}
+      this.effects[2]=0
+      this.stun=false
+      if(pos<0){pos=0}
+      if(pos>=finishPos){gameOver()}
       var t=this.turn;
       levitatePlayer(t)
 
       setTimeout(function(){tpPlayer(t,pos)},700)
-
+      if(obs){setTimeout(() => this.obstacle(1),1200)}
       this.lastpos=this.pos
       this.pos=pos;
     }
@@ -171,8 +179,8 @@ function player(turn,AI,char)
     this.obstacle=function(rec)
     {
       var obs=coordinates[this.pos].obs
-      var turn=this.turn;
-      var others=players.filter(function(a){return turn!==a.turn})
+      var others=notThisTurn(this.turn)
+
       if(this.stun){return 'stun'}
       if(obs===-1){return 'finish'}
       if(obs===0){
@@ -241,17 +249,17 @@ function player(turn,AI,char)
         case 19:
           for(var o of others)
           {
-            o.goto(this.pos);
+            o.goto(this.pos,false);
           }
           break
         case 20:
-          var target=this.nearestplayer()
-          console.log(target)
-          var pos=this.pos
-          this.goto(target.pos)
-          target.goto(pos)
+          let target=this.nearestplayer()
+          let pos=this.pos
+          this.goto(target.pos,false)
+          target.goto(pos,false)
           break
         case 21:
+          showTarget(others,true)
         break
         case 22:
         this.giveEffect('annuity',99999,0)
@@ -302,13 +310,14 @@ function player(turn,AI,char)
         this.giveEffect('speed',4,1)
         break;
         case 36:
+          this.goto(this.lastpos,true)
         break;
 
 
       }
 
 
-
+      return 0
     }
     this.thief=function(){}
     this.nearestplayer=function()
@@ -330,7 +339,7 @@ function player(turn,AI,char)
     {
       var effect=0;
       var effectstring=['slow','speed','stun','silent','shield','poison','radi','annuity','slave']
-      for(var i=0;i<effectstring.length;++i)
+      for(let i=0;i<effectstring.length;++i)
       {
         if(e===effectstring[i])
         {
@@ -441,7 +450,7 @@ function player(turn,AI,char)
     this.assist=function()
     {
       var assists=[]
-      for(var i=0;i<this.damagedby.lengh;++i)
+      for(let i=0;i<this.damagedby.lengh;++i)
       {
         if(this.damagedby[i]>0&&this.turn!=this.damagedby[i])
         {
@@ -490,7 +499,7 @@ function player(turn,AI,char)
       if(targets.length===0)
       {return -1}
 
-      showTarget(targets)
+      showTarget(targets,false)
       //target choosing
     }
     this.hitOneTarget=function(skillto,skilldmg,skillfrom,skill)
@@ -511,6 +520,21 @@ function player(turn,AI,char)
       var totaldamage=this.mergeDamage(skilldmg.pdmg,skilldmg.mdmg,players[skillfrom].arP,players[skillfrom].MP)
       totaldamage+=skilldmg.fdmg
       return this.giveDamage(totaldamage,skillfrom)
+
+    }
+    this.checkProjectile=function()
+    {
+      if(this.invulnerable){return;}
+      let other=notThisTurn(this.turn)
+      for(let o of other)
+      {
+        if(o.projectile.activated&&o.projectile.scope.indexOf(this.pos)!==-1)
+        {
+          this.skillHit(o.projectile.damage,this.turn,o.projectile.skill)
+          o.projectile.action.bind(this)()
+          o.projectile.reset()
+        }
+      }
 
     }
 
