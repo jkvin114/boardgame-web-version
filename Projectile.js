@@ -26,6 +26,7 @@ function Projectile(id,owner,size,skillrange,skill,func)
   this.skillrange=skillrange;
   this.skill=skill
   this.action=func;
+  this.owneraction=function(){}
   this.damage={"pdmg":0,"mdmg":0,"fdmg":0}
   this.pos=-1
   this.activated=false

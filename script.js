@@ -14,9 +14,14 @@ var tiles=[]
 var tilehover=null
 var obsimglist=document.getElementById("obswrapper").children
 var tilelist=document.getElementById("tilewrapper").children
-var hpindicator=$(".hpi").toArray()
-var otherhpfrms=$(".otherhpfrm").toArray()
-var otherhps=$(".otherhp").toArray()
+
+var hpframe=$(".hpframe").toArray()
+var hpspan=$(".hp").toArray()
+var ui=$(".ui").toArray()
+var hpi=$(".hpi").toArray()
+var skillbtns=$(".skillbtns").toArray()
+var noskill=$(".noskill").toArray()
+var storebtn=$(".storebtn").toArray()
 var dmgindicator=[]
 var moneyindicator=[]
 var effectindicator=[]
@@ -63,14 +68,17 @@ $("#projectilecancel").click(function(){
   tileReset()
   showSkillBtn()
 })
+$(".infobtn").popover()
+$('.popover-dismiss').popover({
+  trigger: 'focus'
+})
 
-$("#skillbtns button:nth-child(1)").click(chooseSkill1)
-$("#skillbtns button:nth-child(2)").click(chooseSkill2)
-$("#skillbtns button:nth-child(3)").click(chooseSkill3)
+$(".skillbtns button:nth-child(1)").click(chooseSkill1)
+$(".skillbtns button:nth-child(2)").click(chooseSkill2)
+$(".skillbtns button:nth-child(3)").click(chooseSkill3)
 $(".enlarge").click(function(){
     cursize+=1
    $("#board").css("transform","scale("+String(sizes[cursize])+")")
-
 })
 $(".shrink").click(function(){
    cursize=Math.max(0,cursize-=1)
@@ -85,8 +93,6 @@ $(".addai").click(function(){
 
 })
 
-
-$("#FINISH").click(endgame)
 // 0 상점 1,2,3 돈 4덫 5강도 6포탑 7지뢰 8 칼 9열매
 // 10수면제 11물약 12마법성 13 거미줄
 //  14도박 15도둑 16눈덩이 17흡혈 18소매 19소환 20위치교환 21
@@ -113,12 +119,12 @@ const Map={
     {x:46,y:41,obs:-1,money:0},
     {x:110,y:52,obs:5,money:1},
     {x:163,y:44,obs:18,money:2},
-    {x:212,y:65,obs:21,money:5},
-    {x:268,y:70,obs:21,money:0},
-    {x:324,y:82,obs:21,money:10},
-    {x:354,y:131,obs:21,money:0},
-    {x:340,y:188,obs:21,money:0},
-    {x:286,y:199,obs:21,money:0},    //
+    {x:212,y:65,obs:30,money:5},
+    {x:268,y:70,obs:30,money:0},
+    {x:324,y:82,obs:30,money:10},
+    {x:354,y:131,obs:30,money:0},
+    {x:340,y:188,obs:30,money:0},
+    {x:286,y:199,obs:30,money:0},    //
     {x:238,y:190,obs:1,money:2},
     {x:180,y:163,obs:3,money:7},
     {x:129,y:172,obs:1,money:1},
@@ -341,13 +347,12 @@ function startgame()
     }
 
     if(players.length>=3){
-      $(otherhpfrms[1]).show()
-      $(hpindicator[2]).show()
+      $(ui[2]).show()
+      if(players.length===4){
+        $(ui[3]).show()
+      }
     }
-    if(players.length===4){
-      $(otherhpfrms[2]).show()
-      $(hpindicator[3]).show()
-  }
+
 
     $('#Gamepage').show()
     $('#IndividualSelectpage').hide()
@@ -355,6 +360,7 @@ function startgame()
     $("header").hide()
     drawboard()
     confirm("Game Started")
+    sethpframe()
     showDiceBtn()
 
 
@@ -385,7 +391,15 @@ function chooseTile(index)
   return tile
 }
 
+function sethpframe()
+{
 
+  for(let i=0;i<players.length;++i)
+  {
+    $(hpframe[i]).css("width",String(players[i].MaxHP*1.5)+"px")
+    $(hpspan[i]).css("width",String(players[i].HP*1.5)+"px")
+  }
+}
 function drawboard()
 {
 var ctx=document.getElementById("board").getContext('2d')
@@ -540,101 +554,6 @@ function alarm(text)
 
 }
 
-function nextTurn()
-{
-  hideSkillBtn()
-  players[thisturn].coolDown3()
-
-  thisturn+=1
-  thisturn%=players.length
-  if(players[thisturn].dead)
-  {
-    players[thisturn].respawn()
-  }
-  showDiceBtn()
-}
-
-
-function showDiceBtn()
-{
-
-  $("#mainhpframe").css("width",String(players[thisturn].MaxHP*1.5)+"px")
-  $("#mainhp").css("width",String(players[thisturn].HP*1.5)+"px")
-  players[thisturn].hpframenum=0
-  $("#uiside > div > h1").html(String(thisturn+1)+"P`s turn")
-  $(hpindicator[0]).html(String(thisturn+1)+"P "+String(players[thisturn].MaxHP)+"/"+String(players[thisturn].HP))
-
-
-  var j=0;
-  for(let i=0;i<players.length;++i)
-  {
-
-    if(i!==thisturn)
-    {
-      players[i].hpframenum=j+1
-      $(otherhpfrms[j]).css("width",String((players[i].MaxHP*1.3))+"px")
-      $(otherhps[j]).css("width",String(players[i].HP*1.3)+"px")
-      $(hpindicator[j+1]).html(String(players[i].turn+1)+"P "+String(players[i].MaxHP)+"/"+String(players[i].HP))
-      j+=1;
-    }
-
-  }
-  players[thisturn].invulnerable=false
-  if(players[thisturn].effects[2]===0)
-  {
-    $("#dicebtn").attr("src","dice/1.png");
-    $("#dicebtn").show()
-  }
-  else
-  {
-    manageStun()
-  }
-
-}
-function manageStun()
-{
-  $("#dicebtn").attr("src","dice/stun.png");
-  $("#dicebtn").show()
-  setTimeout(function(){
-      $("#dicebtn").hide()
-      var p=players[thisturn]
-      p.checkProjectile()
-      p.coolDown1()
-      p.obstacle(0)
-      p.coolDown2()
-
-      //basicattack
-      skillcount=0
-      showSkillBtn()
-
-  },1000)
-}
-
-var dicecount=0
-function diceAnimation(){
-    if(dicecount>10) return;
-    dicecount+=1
-    var d=Math.floor(Math.random()*6)+1
-    $("#dicebtn").attr("src","dice/"+String(d)+".png");
-    setTimeout(diceAnimation,60)
-
-
-}
-function throwDice()
-{
-
-  if(players[thisturn].effects[2]>0){return}
-  canvas.renderAll()
-  dicecount=0
-    diceAnimation()
-    var dice=Math.floor(Math.random()*6)+1
-
-    setTimeout(function()
-    {
-            $("#dicebtn").attr("src","dice/"+String(dice)+".png");
-            setTimeout(function(){afterDice(dice)},600)
-    },900)
-}
 function movePlayer(dice,count,pos)
 {
   if((pos+count)>finishPos){return true}
@@ -677,19 +596,379 @@ function levitatePlayer(target)
   });
   setTimeout(function(){playerimgs[target].set({opacity:0})},500)
   }
-  function playerDie(turn)
+
+  function animateHP(target,hp,maxhp,change)
   {
-    let pos=players[turn].pos
-    playerimgs[turn].set({visible:false,top:coordinates[pos].y,left:coordinates[pos].x})
-    canvas.renderAll()
+      $(hpframe[target]).animate({
+        "width":String((maxhp*1.5))+"px"
+      },300,function(){})
+
+      $(hpspan[target]).animate({
+        "width":String(hp*1.5)+"px"
+      },300,function(){})
+      $(hpi[target]).html(String(target+1)+"P "+String(hp)+"/"+String(maxhp))
+
+    var x=playerimgs[target].get('left')
+    var y=playerimgs[target].get('top')
+    dmgindicator[target].set({top:(y),left:x,opacity:1}).bringToFront()
+    if(change<0){
+      dmgindicator[target].set({fill:'#ff0000'})
+      dmgindicator[target].set('text',String(change))
+      if(change>-50){
+        dmgindicator[target].set('fontSize',50)
+      }
+      else if(change>-300)
+      {
+        dmgindicator[target].set('fontSize',60)
+      }
+      else
+      {
+        dmgindicator[target].set('fontSize',85)
+      }
+    }
+    else
+    {
+      dmgindicator[target].set('fill','green')
+      dmgindicator[target].set('text',('+'+String(change)))
+      dmgindicator[target].set('fontSize',50)
+    }
+    dmgindicator[target].animate('opacity',0,{
+      onChange: canvas.renderAll.bind(canvas),
+      duration: 3000,
+      easing: fabric.util.ease.easeOutCubic
+    });
+    dmgindicator[target].animate('top',(y-50),{
+      onChange: canvas.renderAll.bind(canvas),
+      duration: 3000,
+      easing: fabric.util.ease.easeOutCubic
+    });
   }
-  function playerRespawn(turn)
+  function indicateMoney(target,money){
+
+    var x=playerimgs[target].get('left')
+    var y=playerimgs[target].get('top')
+    moneyindicator[target].set({top:(y),left:x,opacity:1}).bringToFront()
+    moneyindicator[target].set('fontSize',40)
+    if(money<0)
+    {
+      moneyindicator[target].set({fill:'purple'})
+      moneyindicator[target].set('text',String(money)+" gold")
+
+    }
+    else
+    {
+      moneyindicator[target].set('fill','orange')
+      moneyindicator[target].set('text',('+'+String(money)+" gold"))
+      if(money>50)
+      {
+        moneyindicator[target].set('fontSize',50)
+      }
+      if(money>90)
+      {
+        moneyindicator[target].set('fontSize',70)
+      }
+    }
+    moneyindicator[target].animate('opacity',0,{
+      onChange: canvas.renderAll.bind(canvas),
+      duration: 3000,
+      easing: fabric.util.ease.easeOutCubic
+    });
+    moneyindicator[target].animate('top',(y-50),{
+      onChange: canvas.renderAll.bind(canvas),
+      duration: 3000,
+      easing: fabric.util.ease.easeOutCubic
+    });
+
+  }
+  function indicateEffect(target,effect,num)
   {
-    let pos=players[turn].pos
-    playerimgs[turn].set({visible:true,top:coordinates[pos].y,left:coordinates[pos].x})
-    canvas.renderAll()
+    var x=playerimgs[target].get('left')
+    var y=playerimgs[target].get('top')
+    var e=""
+    switch(effect)
+    {
+      case 0:
+        e="SLOW!"
+        effectindicator[num].set({fill:'blue'})
+      break;
+      case 1:
+        e="SPEED!"
+        effectindicator[num].set({fill:'blue'})
+      break;
+      case 2:
+        e="STUN!"
+        effectindicator[num].set({fill:'purple'})
+      break;
+      case 3:
+        e="SILENT!"
+        effectindicator[num].set({fill:'purple'})
+      break;
+      case 4:
+        e="SHIELD!"
+        effectindicator[num].set({fill:'green'})
+      break;
+      case 5:
+        e="POISON!"
+        effectindicator[num].set({fill:'green'})
+      break;
+      case 6:
+        e="RADIATION!"
+        effectindicator[num].set({fill:'green'})
+      break;
+      case 7:
+        e="ANNUITY!"
+        effectindicator[num].set({fill:'green'})
+      break;
+      case 8:
+        e="SLAVED!"
+        effectindicator[num].set({fill:'red'})
+      break;
+
+    }
+
+
+
+
+    effectindicator[num].set({top:(y-50-(num*50)),left:(x-50),opacity:1}).bringToFront()
+    effectindicator[num].set('text',e)
+
+    effectindicator[num].animate('opacity',0,{
+      onChange: canvas.renderAll.bind(canvas),
+      duration: 3000,
+      easing: fabric.util.ease.easeOutCubic
+    });
+    effectindicator[num].animate('top','-=50',{
+      onChange: canvas.renderAll.bind(canvas),
+      duration: 3000,
+      easing: fabric.util.ease.easeOutCubic
+    });
+
+
   }
 
+  function showTarget(targets,godhand)
+  {
+    disableSkillBtn()
+    //if(!godhand) {
+    $("#skillcancel").show()
+    canvas.discardActiveObject()
+    for(let t of targets)
+    {
+      let tr=t.turn
+      var x=playerimgs[tr].get('left')
+      var y=playerimgs[tr].get('top')
+      var tL= () => targetLocked(tr,godhand)
+      targetimgs[tr].on('selected',tL);
+      targetimgs[tr].set({left:x,top:y,opacity:1,scaleY:2,visible:true})
+      targetimgs[tr].animate('scaleY',0.1,{
+        onChange: canvas.renderAll.bind(canvas),
+        duration: 500,
+        easing: fabric.util.ease.easeOutBounce
+      });
+
+    }
+
+
+  }
+  function resetTarget()
+  {
+    for(let t of targetimgs)
+    {
+      t.set({hasBorders:false,visible:false} )
+      t.off()
+      t.animate('scaleY',0.16,{
+        onChange: canvas.renderAll.bind(canvas),
+        duration: 100,
+        easing: fabric.util.ease.easeOutCubic
+      });
+
+    }
+    $("#skillcancel").hide()
+    showSkillBtn()
+  }
+
+  function liftTile(index,godhand)
+  {
+    if(tiles[index]===null||index>=tiles.length||index<0) {return}
+    activetiles.push(index)
+
+
+    var select= () => tileSelected(index,godhand)
+    tiles[index].on('selected',select)
+    // var hover= function(){
+    //   tilehover.set({left:coordinates[index].x,top:coordinates[index].y,visible:true})
+    //   console.log(index)
+    //   canvas.renderAll()
+    // }
+    // var dehover= function(){
+    //   tilehover.set({visible:false})
+    //   canvas.renderAll()
+    // }
+
+  //  tiles[index].on('mouse:over',hover)
+    //tiles[index].on('mouse:out',dehover)
+    tiles[index].set({hoverCursor:"pointer",evented:true})
+
+    tiles[index].bringToFront()
+
+    tiles[index].animate('top','-=10',{
+      onChange: canvas.renderAll.bind(canvas),
+      duration: 1000,
+      easing: fabric.util.ease.easeOutCubic
+    });
+
+
+  }
+  function tileSelected(index,godhand)
+  {
+    if(tiles[index]===null||index>=tiles.length||index<0) {return}
+
+    tileReset()
+    if(godhand){
+      godhandtarget.goto(index,true)
+      godhandtarget=-1
+    }
+    else{
+      skilldmg.proj.placeProj(index)
+      skilldmg.func()
+    }
+    showSkillBtn()
+  }
+  function tileReset()
+  {
+    $("#projectilecancel").hide()
+    canvas.discardActiveObject()
+    playersToFront()
+    for(var t of activetiles)
+    {
+      tiles[t].off()
+      tiles[t].sendToBack()
+      tiles[t].set({hoverCursor:"defalut",evented:false})
+      tiles[t].animate('top','+=10',{
+        onChange: canvas.renderAll.bind(canvas),
+        duration: 1000,
+        easing: fabric.util.ease.easeOutCubic
+      });
+    }
+    shadow.set({visible:false})
+    shadow.sendToBack()
+    canvas.renderAll()
+    activetiles=[]
+  }
+  function playersToFront()
+  {
+    for(var p of playerimgs)
+    {
+      p.bringToFront()
+    }
+    canvas.renderAll()
+  }
+  function targetLocked(target,godhand)
+  {
+      if(godhand)
+      {
+        chooseLocation(players[target].pos,10,true)
+        godhandtarget=players[target]
+        resetTarget()
+      }
+      else {
+        var p=players[thisturn]
+        skilldmg.func(target)
+        resetTarget()
+        var died=p.hitOneTarget(target,skilldmg,p.turn,skilldmg.skill)
+      //  skilldmg=-1
+
+      }
+
+  }
+
+  function nextTurn()
+  {
+    hideSkillBtn()
+    players[thisturn].coolDown3()
+
+    thisturn+=1
+    thisturn%=players.length
+    if(players[thisturn].dead)
+    {
+      players[thisturn].respawn()
+    }
+    showDiceBtn()
+  }
+
+
+  function showDiceBtn()
+  {
+
+    for(let i=0;i<players.length;++i)
+    {
+
+      if(i===thisturn)
+      {
+        $(ui[i]).css("border","7px solid red")
+      }
+      else {
+        $(ui[i]).css("border","7px solid lightgray")
+      }
+
+    }
+
+    players[thisturn].invulnerable=false
+    if(players[thisturn].effects[2]===0)
+    {
+      $("#dicebtn").attr("src","dice/1.png");
+      $("#dicebtn").show()
+    }
+    else
+    {
+      manageStun()
+    }
+
+  }
+  function manageStun()
+  {
+    $("#dicebtn").attr("src","dice/stun.png");
+    $("#dicebtn").show()
+    setTimeout(function(){
+        $("#dicebtn").hide()
+        var p=players[thisturn]
+        p.checkProjectile()
+        p.coolDown1()
+        p.obstacle(0)
+        p.coolDown2()
+
+        //basicattack
+        skillcount=0
+        showSkillBtn()
+
+    },1000)
+  }
+
+  var dicecount=0
+  function diceAnimation(){
+      if(dicecount>10) return;
+      dicecount+=1
+      var d=Math.floor(Math.random()*6)+1
+      $("#dicebtn").attr("src","dice/"+String(d)+".png");
+      setTimeout(diceAnimation,60)
+
+
+  }
+  function throwDice()
+  {
+
+    if(players[thisturn].effects[2]>0){return}
+    canvas.renderAll()
+    dicecount=0
+      diceAnimation()
+      var dice=Math.floor(Math.random()*6)+1
+
+      setTimeout(function()
+      {
+              $("#dicebtn").attr("src","dice/"+String(dice)+".png");
+              setTimeout(function(){afterDice(dice)},600)
+      },900)
+  }
 function afterDice(dice)
 {
     $("#dicebtn").hide()
@@ -702,15 +981,17 @@ function afterDice(dice)
       gameOver()
     }
 
-
-
     p.coolDown1()
 
 
     setTimeout(function()
     {
       p.checkProjectile()
-      p.obstacle(0)
+      let result=p.obstacle(0)
+      if(result==='store')
+      {
+        $(storebtn[thisturn]).show()
+      }
       p.coolDown2()
 
       //basicattack
@@ -718,65 +999,47 @@ function afterDice(dice)
       showSkillBtn()
     },dice*100)
 }
-function showTarget(targets,godhand)
-{
-  hideSkillBtn()
-  //if(!godhand) {
-  $("#skillcancel").show()
-  canvas.discardActiveObject()
-  for(let t of targets)
-  {
-    var tr=t.turn
-    var x=playerimgs[tr].get('left')
-    var y=playerimgs[tr].get('top')
-    var tL= () => targetLocked(tr,godhand)
-    targetimgs[tr].on('selected',tL);
-    targetimgs[tr].set({left:x,top:y,opacity:1,scaleY:2,visible:true})
-    targetimgs[tr].animate('scaleY',0.1,{
-      onChange: canvas.renderAll.bind(canvas),
-      duration: 500,
-      easing: fabric.util.ease.easeOutBounce
-    });
-
-  }
-
-
-}
-function resetTarget()
-{
-  for(let t of targetimgs)
-  {
-    t.set({hasBorders:false,visible:false} )
-    t.off()
-    t.animate('scaleY',0.16,{
-      onChange: canvas.renderAll.bind(canvas),
-      duration: 100,
-      easing: fabric.util.ease.easeOutCubic
-    });
-
-  }
-  $("#skillcancel").hide()
-  showSkillBtn()
-}
 function showSkillBtn()
 {
+
   $("#nextturn").show()
+  $(".skillbtns button").attr("disabled",false)
+  $("#nextturn").attr("disabled",false)
 //  if(skillcount===4 || players[thisturn].effects[3]>0)
   if(players[thisturn].effects[3]>0)
   {       //silent or used skill 4 times
-    $("#noskill").show()
+    $(noskill[thisturn]).show()
   }
   else {
+    $(".storebtn").hide()
+    $(skillbtns[thisturn]).children().show()
+    let s= $(skillbtns[thisturn]).children().toArray()
+    for(let i=0;i<3;++i)
+    {
+      if(players[thisturn].cooltime[i]===0)
+      {
+        $(s[i]).css({"background-color": "#00b235"})
+      }
+      else {
+        $(s[i]).css({"background-color": "gray"})
+      }
+    }
 
-    $("#skillbtns button").show()
   }
 
 }
 function hideSkillBtn()
 {
-  $("#skillbtns button").hide()
+  $(".skillbtns button").hide()
   $("#nextturn").hide()
-  $("#noskill").hide()
+  $(".noskill").hide()
+  $(".storebtn").hide()
+}
+function disableSkillBtn()
+{
+  $(".skillbtns button").attr("disabled",true)
+  $("#nextturn").attr("disabled",true)
+
 }
 function chooseSkill1()   //Q
 {
@@ -835,7 +1098,7 @@ function getSkill(s)
 //proj: Projectile object
 function chooseLocation(pos,range,godhand)
 {
-  hideSkillBtn()
+  disableSkillBtn()
   if(godhand){$("#godhandcancel").show()}
   else{$("#projectilecancel").show()}
   let p=players[thisturn]
@@ -850,257 +1113,21 @@ function chooseLocation(pos,range,godhand)
   playersToFront()
 
 }
-function targetLocked(target,godhand)
+
+function playerDie(turn)
 {
-    if(godhand)
-    {
-      chooseLocation(players[target].pos,10,true)
-      godhandtarget=players[target]
-      resetTarget()
-    }
-    else {
-      var p=players[thisturn]
-      skilldmg.func(target)
-      resetTarget()
-      var died=p.hitOneTarget(target,skilldmg,p.turn,skilldmg.skill)
-    //  skilldmg=-1
-
-    }
-
-}
-function animateHP(target,hp,maxhp,change)
-{
-  if(target===thisturn)
-  {
-    $("#mainhpframe").css("width",String(players[target].MaxHP*1.5)+"px")
-    $("#mainhp").css("width",String(players[target].HP*1.5)+"px")
-    $(hpindicator[0]).html(String(target+1)+"P "+String(players[target].MaxHP)+"/"+String(players[target].HP))
-  }
-  else{
-    var frameindex=players[target].hpframenum-1
-    $(otherhpfrms[frameindex]).animate({
-      "width":String((maxhp*1.3))+"px"
-    },300,function(){})
-
-    $(otherhps[frameindex]).animate({
-      "width":String(hp*1.3)+"px"
-    },300,function(){})
-    $(hpindicator[frameindex+1]).html(String(target+1)+"P "+String(players[target].MaxHP)+"/"+String(players[target].HP))
-
-
-  }
-  var x=playerimgs[target].get('left')
-  var y=playerimgs[target].get('top')
-  dmgindicator[target].set({top:(y),left:x,opacity:1}).bringToFront()
-  if(change<0){
-    dmgindicator[target].set({fill:'#ff0000'})
-    dmgindicator[target].set('text',String(change))
-    if(change>-50){
-      dmgindicator[target].set('fontSize',50)
-    }
-    else if(change>-300)
-    {
-      dmgindicator[target].set('fontSize',60)
-    }
-    else
-    {
-      dmgindicator[target].set('fontSize',85)
-    }
-  }
-  else
-  {
-    dmgindicator[target].set('fill','green')
-    dmgindicator[target].set('text',('+'+String(change)))
-    dmgindicator[target].set('fontSize',50)
-  }
-  dmgindicator[target].animate('opacity',0,{
-    onChange: canvas.renderAll.bind(canvas),
-    duration: 3000,
-    easing: fabric.util.ease.easeOutCubic
-  });
-  dmgindicator[target].animate('top',(y-50),{
-    onChange: canvas.renderAll.bind(canvas),
-    duration: 3000,
-    easing: fabric.util.ease.easeOutCubic
-  });
-}
-function indicateMoney(target,money){
-
-  var x=playerimgs[target].get('left')
-  var y=playerimgs[target].get('top')
-  moneyindicator[target].set({top:(y),left:x,opacity:1}).bringToFront()
-  moneyindicator[target].set('fontSize',40)
-  if(money<0)
-  {
-    moneyindicator[target].set({fill:'purple'})
-    moneyindicator[target].set('text',String(money)+" gold")
-
-  }
-  else
-  {
-    moneyindicator[target].set('fill','orange')
-    moneyindicator[target].set('text',('+'+String(money)+" gold"))
-    if(money>50)
-    {
-      moneyindicator[target].set('fontSize',50)
-    }
-    if(money>90)
-    {
-      moneyindicator[target].set('fontSize',70)
-    }
-  }
-  moneyindicator[target].animate('opacity',0,{
-    onChange: canvas.renderAll.bind(canvas),
-    duration: 3000,
-    easing: fabric.util.ease.easeOutCubic
-  });
-  moneyindicator[target].animate('top',(y-50),{
-    onChange: canvas.renderAll.bind(canvas),
-    duration: 3000,
-    easing: fabric.util.ease.easeOutCubic
-  });
-
-}
-function indicateEffect(target,effect,num)
-{
-  var x=playerimgs[target].get('left')
-  var y=playerimgs[target].get('top')
-  var e=""
-  switch(effect)
-  {
-    case 0:
-      e="SLOW!"
-      effectindicator[num].set({fill:'blue'})
-    break;
-    case 1:
-      e="SPEED!"
-      effectindicator[num].set({fill:'blue'})
-    break;
-    case 2:
-      e="STUN!"
-      effectindicator[num].set({fill:'purple'})
-    break;
-    case 3:
-      e="SILENT!"
-      effectindicator[num].set({fill:'purple'})
-    break;
-    case 4:
-      e="SHIELD!"
-      effectindicator[num].set({fill:'green'})
-    break;
-    case 5:
-      e="POISON!"
-      effectindicator[num].set({fill:'green'})
-    break;
-    case 6:
-      e="RADIATION!"
-      effectindicator[num].set({fill:'green'})
-    break;
-    case 7:
-      e="ANNUITY!"
-      effectindicator[num].set({fill:'green'})
-    break;
-    case 8:
-      e="SLAVED!"
-      effectindicator[num].set({fill:'red'})
-    break;
-
-  }
-
-
-
-
-  effectindicator[num].set({top:(y-50-(num*50)),left:(x-50),opacity:1}).bringToFront()
-  effectindicator[num].set('text',e)
-
-  effectindicator[num].animate('opacity',0,{
-    onChange: canvas.renderAll.bind(canvas),
-    duration: 3000,
-    easing: fabric.util.ease.easeOutCubic
-  });
-  effectindicator[num].animate('top','-=50',{
-    onChange: canvas.renderAll.bind(canvas),
-    duration: 3000,
-    easing: fabric.util.ease.easeOutCubic
-  });
-
-
-}
-
-function liftTile(index,godhand)
-{
-  if(tiles[index]===null||index>=tiles.length||index<0) {return}
-  activetiles.push(index)
-
-
-  var select= () => tileSelected(index,godhand)
-  tiles[index].on('selected',select)
-  // var hover= function(){
-  //   tilehover.set({left:coordinates[index].x,top:coordinates[index].y,visible:true})
-  //   console.log(index)
-  //   canvas.renderAll()
-  // }
-  // var dehover= function(){
-  //   tilehover.set({visible:false})
-  //   canvas.renderAll()
-  // }
-
-//  tiles[index].on('mouse:over',hover)
-  //tiles[index].on('mouse:out',dehover)
-  tiles[index].set({hoverCursor:"pointer",evented:true})
-
-  tiles[index].bringToFront()
-
-  tiles[index].animate('top','-=10',{
-    onChange: canvas.renderAll.bind(canvas),
-    duration: 1000,
-    easing: fabric.util.ease.easeOutCubic
-  });
-
-
-}
-function tileSelected(index,godhand)
-{
-  if(tiles[index]===null||index>=tiles.length||index<0) {return}
-
-  tileReset()
-  if(godhand){
-    godhandtarget.goto(index,true)
-    godhandtarget=-1
-  }
-  else{
-    skilldmg.proj.placeProj(index)
-  }
-  showSkillBtn()
-}
-function tileReset()
-{
-  $("#projectilecancel").hide()
-  canvas.discardActiveObject()
-  playersToFront()
-  for(var t of activetiles)
-  {
-    tiles[t].off()
-    tiles[t].sendToBack()
-    tiles[t].set({hoverCursor:"defalut",evented:false})
-    tiles[t].animate('top','+=10',{
-      onChange: canvas.renderAll.bind(canvas),
-      duration: 1000,
-      easing: fabric.util.ease.easeOutCubic
-    });
-  }
-  shadow.set({visible:false})
-  shadow.sendToBack()
+  let pos=players[turn].pos
+  playerimgs[turn].set({visible:false,top:coordinates[pos].y,left:coordinates[pos].x})
   canvas.renderAll()
-  activetiles=[]
+  $(ui[turn]).css({"background-color":"gray"})
 }
-function playersToFront()
+function playerRespawn(turn)
 {
-  for(var p of playerimgs)
-  {
-    p.bringToFront()
-  }
+  let pos=players[turn].pos
+  playerimgs[turn].set({visible:true,top:coordinates[pos].y,left:coordinates[pos].x})
   canvas.renderAll()
+  $(storebtn[turn]).show()
+  $(ui[turn]).css({"background-color":"white"})
 }
 
  //   1. dice

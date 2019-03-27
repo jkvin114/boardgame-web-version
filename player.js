@@ -28,7 +28,7 @@ function player(turn,AI,char)
     this.name=""
     this.char=char
     this.team=true   //true when readteam
-    this.pos=0
+    this.pos=15
     this.lastpos=0
     this.dead=false
     this.level=3;
@@ -41,9 +41,9 @@ function player(turn,AI,char)
     this.nextdmg=0;
     this.adamage=0;
 
-    this.HP=200;
-    this.MaxHP=200;
-    this.AD=1000;
+    this.HP=600;
+    this.MaxHP=600;
+    this.AD=500;
     this.AP=0;
     this.AR=0;
     this.MR=0;
@@ -54,7 +54,7 @@ function player(turn,AI,char)
     this.shield=0;
     this.cooltime=[0,0,0]
     this.duration=[0,0,0]
-    this.effects=[0,0,0,0,0,0,0,0]
+    this.effects=[0,0,0,0,0,0,0,0,0]
       //0.slow 1.speed 2.stun 3.silent 4. shield  5.poison  6.radi  7.annuity 8.slave
     this.stun=0
     this.skilleffects=[[0,-1],[0,-1]]
@@ -69,7 +69,6 @@ function player(turn,AI,char)
       if(!isTeam) {return false}
       if(this.team!==other.team) {return false}
       return true
-
     }
 
     this.cool=function(s)
@@ -86,7 +85,9 @@ function player(turn,AI,char)
     {
       this.effects=this.effects.map(decrement)
       this.cooltime=this.cooltime.map(decrement)
-
+      if(this.effects[5]>0){this.giveDamage(30,-1)}
+      if(this.effects[7]>0){this.giveMoney(20)}
+      if(this.effects[8]>0){this.giveDamage(80,-1)}
     }
     this.coolDown2=function()
     {
@@ -199,6 +200,7 @@ function player(turn,AI,char)
       if(obs===-1){return 'finish'}
       if(obs===0){
         //this.store()
+        this.effects[3]=1
         return 'store'
       }
 
@@ -237,7 +239,7 @@ function player(turn,AI,char)
         break
         case 14:
         var d=Math.floor(Math.random()*6)+1
-        this.giveMoney(d)
+        this.giveMoney(d*10)
         break;
         case 15:
         this.thief()
@@ -447,6 +449,7 @@ function player(turn,AI,char)
       this.duration.map(function(x){return 0;})
       this.invulnerable=true
       this.stun=false
+      this.effects[3]=1
       this.pos=this.respawnPoint()
       playerDie(this.turn)
     }
