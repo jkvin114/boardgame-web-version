@@ -34,13 +34,13 @@ function Swordsman(turn,AI)
         break
         case 2:
           this.cooltime[s-1]=0
-          this.projectile.setProj(100,0,0,2)
+          this.projectile.setProj(300,0,0,2)
           skillattr={"proj":this.projectile,"nontarget":true}
           break
         case 3:
           //skillto=this.chooseTarget()
-          var f=function(skillto){players[i].cooltime[2]=0
-                            players[i].goto(players[skillto].pos,false)}
+          var f=function(skillto){this.cooltime[2]=0
+                            this.goto(players[skillto].pos,false)}.bind(this)
           skillattr={"pdmg":Math.floor((30+this.AD)),"mdmg":0,"fdmg":0,"range":100,"skill":3,"func":f,"nontarget":false}
         break
 

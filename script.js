@@ -64,9 +64,9 @@ $("#projectilecancel").click(function(){
   showSkillBtn()
 })
 
-$("#skillbtns p:nth-child(1)").click(chooseSkill1)
-$("#skillbtns p:nth-child(2)").click(chooseSkill2)
-$("#skillbtns p:nth-child(3)").click(chooseSkill3)
+$("#skillbtns button:nth-child(1)").click(chooseSkill1)
+$("#skillbtns button:nth-child(2)").click(chooseSkill2)
+$("#skillbtns button:nth-child(3)").click(chooseSkill3)
 $(".enlarge").click(function(){
     cursize+=1
    $("#board").css("transform","scale("+String(sizes[cursize])+")")
@@ -113,9 +113,9 @@ const Map={
     {x:46,y:41,obs:-1,money:0},
     {x:110,y:52,obs:5,money:1},
     {x:163,y:44,obs:18,money:2},
-    {x:212,y:65,obs:5,money:5},
-    {x:268,y:70,obs:18,money:0},
-    {x:324,y:82,obs:5,money:10},
+    {x:212,y:65,obs:21,money:5},
+    {x:268,y:70,obs:21,money:0},
+    {x:324,y:82,obs:21,money:10},
     {x:354,y:131,obs:21,money:0},
     {x:340,y:188,obs:21,money:0},
     {x:286,y:199,obs:21,money:0},    //
@@ -216,7 +216,7 @@ const Map={
     {x:750,y:546,obs:-1,money:0}
   ],
   "finish":103,
-  "muststop":[0,16,38,72,103],
+  "muststop":[16,38,72,103],
   "respawn":[0,16,38,56,72]
 }
 
@@ -390,7 +390,6 @@ function drawboard()
 {
 var ctx=document.getElementById("board").getContext('2d')
 
-
     canvas.selection=false
 
     var board=new fabric.Image(document.getElementById("boardimg"),{
@@ -424,14 +423,9 @@ var ctx=document.getElementById("board").getContext('2d')
         originY: 'center'
       })
       o.scale(0.3)
-      let group=new fabric.Group([t,o],{
-        lockMovementX: true,lockMovementY: true,
-        hasControls: false,hasBorders:false,evented:false,
-        lockScalingX: true,lockScalingY:true,lockRotation: true,
-        originX: 'center',
-        originY: 'center',
+      let group=new fabric.Group([t,o],{evented:false,
       })
-
+      lockFabricObject(group)
       canvas.add(group)
       tiles.push(group)
       group.sendToBack()
@@ -457,15 +451,9 @@ function showObjects()
     for(let i=0;i<players.length;++i)
     {
       let p=new fabric.Image(document.getElementById("playerimg"),{
-          left:(coordinates[0].x+diff[i][0]),top:(coordinates[0].y+diff[i][1]),width:300,height:400,
-          lockMovementX: true, lockMovementY: true,
-          hasControls: false,hasBorders:false,evented:false,
-          lockScalingX: true, lockScalingY:true,lockRotation: true,
-          originX: 'center',
-          originY: 'center'
-
+          left:(coordinates[0].x+diff[i][0]),top:(coordinates[0].y+diff[i][1]),width:300,height:400,evented:false,
       })
-
+      lockFabricObject(p)
       canvas.add(p.scale(0.13))
       p.bringToFront();
       playerimgs.push(p)
@@ -475,13 +463,10 @@ function showObjects()
       let p=new fabric.Image(document.getElementById("targetimg"),
         {opacity:0,
           width:500,height:500,
-          lockMovementX: true, lockMovementY: true,
-          hasControls: false,hasBorders:true,visible:false,
-          lockScalingX: true, lockScalingY:true,lockRotation: true,
+          visible:false,
           hoverCursor: "pointer",
-          originX: 'center',
-          originY: 'center'
         })
+        lockFabricObject(p)
 
 
         canvas.add(p.scale(0.1))
@@ -492,14 +477,11 @@ function showObjects()
         fontSize: 40,fill:'#D81B60',
         opacity:1,fontWeight: 'bold',
         width:500,height:500,
-        lockMovementX: true, lockMovementY: true,
-        hasControls: false,
         evented:false,
-        lockScalingX: true, lockScalingY:true,lockRotation: true,
-        originX: 'center',
-        originY: 'center',
-        top:100,left:100
+        top:100,left:100,
+        fontFamily:'Bangers'
         });
+        lockFabricObject(d)
         canvas.add(d)
         d.bringToFront();
         dmgindicator.push(d)
@@ -509,14 +491,11 @@ function showObjects()
         fontSize: 40,fill:'orange',
         opacity:1,fontWeight: 'bold',
         width:500,height:500,
-        lockMovementX: true, lockMovementY: true,
-        hasControls: false,
         evented:false,
-        lockScalingX: true, lockScalingY:true,lockRotation: true,
-        originX: 'center',
-        originY: 'center',
-        top:100,left:100
+        top:100,left:100,
+        fontFamily:'Bangers'
         });
+        lockFabricObject(m)
         canvas.add(m)
         m.bringToFront();
         moneyindicator.push(m)
@@ -529,23 +508,38 @@ function showObjects()
         e = new fabric.Text("", {
         fontSize: 50,fill:'purple',
         opacity:1,fontWeight: 'bold',
-        width:500,height:500,
-        lockMovementX: true, lockMovementY: true,
-        hasControls: false,
-        evented:false,
-        lockScalingX: true, lockScalingY:true,lockRotation: true,
-        originX: 'center',
-        originY: 'center',
-        top:100,left:100
+        width:500,height:500,evented:false,
+        top:100,left:100,
+        fontFamily:'Bangers'
         });
+        lockFabricObject(e)
         canvas.add(e)
         canvas.moveTo(e, 1);
         effectindicator.push(e)
     }
-
-
+   var alarm = new fabric.Text("1P is slain by 2P", {
+    fontSize: 100,fill:'black',
+    opacity:1,fontWeight: 'bold',
+    width:500,height:500,evented:false,visible:false,
+    fontFamily:'Bangers'
+    });
+    lockFabricObject(alarm)
+    alarm.set({top:150,left:500})
+    canvas.add(alarm)
 
 }
+function lockFabricObject(obj){
+  obj.set({lockMovementX: true, lockMovementY: true,
+  hasControls: false,hasBorders:false,
+  lockScalingX: true, lockScalingY:true,lockRotation: true,
+  originX: 'center',
+  originY: 'center',})
+}
+function alarm(text)
+{
+
+}
+
 function nextTurn()
 {
   hideSkillBtn()
@@ -553,7 +547,10 @@ function nextTurn()
 
   thisturn+=1
   thisturn%=players.length
-
+  if(players[thisturn].dead)
+  {
+    players[thisturn].respawn()
+  }
   showDiceBtn()
 }
 
@@ -580,7 +577,6 @@ function showDiceBtn()
       $(hpindicator[j+1]).html(String(players[i].turn+1)+"P "+String(players[i].MaxHP)+"/"+String(players[i].HP))
       j+=1;
     }
-
 
   }
   players[thisturn].invulnerable=false
@@ -633,12 +629,11 @@ function throwDice()
     diceAnimation()
     var dice=Math.floor(Math.random()*6)+1
 
-
     setTimeout(function()
     {
             $("#dicebtn").attr("src","dice/"+String(dice)+".png");
-            setTimeout(function(){afterDice(dice)},900)
-    },660)
+            setTimeout(function(){afterDice(dice)},600)
+    },900)
 }
 function movePlayer(dice,count,pos)
 {
@@ -656,6 +651,7 @@ function movePlayer(dice,count,pos)
     duration: 100,
     easing: fabric.util.ease.easeOutCubic
   });
+
   setTimeout(function(){return movePlayer(dice,count+1,pos)},100)
 }
 function tpPlayer(target,pos)
@@ -680,6 +676,18 @@ function levitatePlayer(target)
     easing: fabric.util.ease.easeInCubic
   });
   setTimeout(function(){playerimgs[target].set({opacity:0})},500)
+  }
+  function playerDie(turn)
+  {
+    let pos=players[turn].pos
+    playerimgs[turn].set({visible:false,top:coordinates[pos].y,left:coordinates[pos].x})
+    canvas.renderAll()
+  }
+  function playerRespawn(turn)
+  {
+    let pos=players[turn].pos
+    playerimgs[turn].set({visible:true,top:coordinates[pos].y,left:coordinates[pos].x})
+    canvas.renderAll()
   }
 
 function afterDice(dice)
@@ -709,10 +717,6 @@ function afterDice(dice)
       skillcount=0
       showSkillBtn()
     },dice*100)
-
-
-
-
 }
 function showTarget(targets,godhand)
 {
@@ -764,13 +768,13 @@ function showSkillBtn()
   }
   else {
 
-    $("#skillbtns p").show()
+    $("#skillbtns button").show()
   }
 
 }
 function hideSkillBtn()
 {
-  $("#skillbtns p").hide()
+  $("#skillbtns button").hide()
   $("#nextturn").hide()
   $("#noskill").hide()
 }
@@ -839,7 +843,7 @@ function chooseLocation(pos,range,godhand)
   canvas.discardActiveObject()
   shadow.set({visible:true})
 
-  for(let i=pos-(range/2+1);i<pos+(range/2+1);++i)
+  for(let i=pos-(range/2);i<pos+(range/2+1);++i)
   {
     liftTile(i,godhand)
   }
@@ -887,16 +891,27 @@ function animateHP(target,hp,maxhp,change)
   }
   var x=playerimgs[target].get('left')
   var y=playerimgs[target].get('top')
-  dmgindicator[target].set({top:(y),left:x,opacity:1})
+  dmgindicator[target].set({top:(y),left:x,opacity:1}).bringToFront()
   if(change<0){
     dmgindicator[target].set({fill:'#ff0000'})
     dmgindicator[target].set('text',String(change))
-
+    if(change>-50){
+      dmgindicator[target].set('fontSize',50)
+    }
+    else if(change>-300)
+    {
+      dmgindicator[target].set('fontSize',60)
+    }
+    else
+    {
+      dmgindicator[target].set('fontSize',85)
+    }
   }
   else
   {
-    dmgindicator[target].set('fill','#00ff14')
+    dmgindicator[target].set('fill','green')
     dmgindicator[target].set('text',('+'+String(change)))
+    dmgindicator[target].set('fontSize',50)
   }
   dmgindicator[target].animate('opacity',0,{
     onChange: canvas.renderAll.bind(canvas),
@@ -910,19 +925,29 @@ function animateHP(target,hp,maxhp,change)
   });
 }
 function indicateMoney(target,money){
+
   var x=playerimgs[target].get('left')
   var y=playerimgs[target].get('top')
-  moneyindicator[target].set({top:(y),left:x,opacity:1})
-
+  moneyindicator[target].set({top:(y),left:x,opacity:1}).bringToFront()
+  moneyindicator[target].set('fontSize',40)
   if(money<0)
   {
     moneyindicator[target].set({fill:'purple'})
     moneyindicator[target].set('text',String(money)+" gold")
+
   }
   else
   {
     moneyindicator[target].set('fill','orange')
     moneyindicator[target].set('text',('+'+String(money)+" gold"))
+    if(money>50)
+    {
+      moneyindicator[target].set('fontSize',50)
+    }
+    if(money>90)
+    {
+      moneyindicator[target].set('fontSize',70)
+    }
   }
   moneyindicator[target].animate('opacity',0,{
     onChange: canvas.renderAll.bind(canvas),
@@ -985,7 +1010,7 @@ function indicateEffect(target,effect,num)
 
 
 
-  effectindicator[num].set({top:(y-50-(num*50)),left:(x-50),opacity:1})
+  effectindicator[num].set({top:(y-50-(num*50)),left:(x-50),opacity:1}).bringToFront()
   effectindicator[num].set('text',e)
 
   effectindicator[num].animate('opacity',0,{

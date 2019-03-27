@@ -3,7 +3,7 @@
 		{
         background: linear-gradient(to bottom, rgba(248,255,232,1) 0%,
         rgba(227,245,171,1) 61%,rgba(193,219,100,1) 100%);
-		    font-family:"Showcard Gothic";
+		    font-family: 'Bangers', cursive;
 
 		}
     html,body{
@@ -14,12 +14,12 @@
     }
     #Mainpage > h3{
       color: #1f842a;
-      font-size:50px;
+      font-size:100px;
       text-align: center;
     }
 		#Mainpage > h4{
       color: #1f842a;
-      font-size:30px;
+      font-size:70px;
       text-align: center;
     }
     .mainbtn{
@@ -30,10 +30,10 @@
 			cursor:pointer;
 			text-align:center;
 			padding: 10px 5px;
-			font-size: 45px;
+			font-size: 60px;
       margin: 50px auto;
 			border:none;
-			font-family	:"Showcard Gothic"
+			font-family: 'Bangers', cursive;
 		}
     #mainbtncontainer{
       display:grid;
@@ -76,7 +76,7 @@
 			cursor:pointer;
 			text-align:center;
 			padding: 10px 5px;
-			font-size: 45px;
+			font-size: 60px;
     }
 		.dropdown:hover{
 				color:gray;
@@ -89,7 +89,7 @@
 
     #playbtn{
         background-color: palegreen;
-        font-size: 3vw;
+        font-size: 4vw;
         color:black;
         display: inline-block;
         padding: 2vw 5vw;
@@ -99,7 +99,7 @@
 
     }
 		#Selectpage >h2{
-			font-size: 34px;
+			font-size: 50px;
 			text-align: center;
 		}
     #choicecontainer{
@@ -111,7 +111,7 @@
         #choicecontainer div{
             border: 3px solid lightgray;
             padding: 15px;
-            font-size: 15px;
+            font-size: 25px;
             text-align: center;
         }
 				.container{
@@ -120,7 +120,7 @@
 					padding: 35px;
 					margin-bottom: 12px;
 					cursor: pointer;
-					font-size:32px;
+					font-size:50px;
 				}
 				.container input{
 					opacity:0;
@@ -175,7 +175,7 @@
 					box-shadow: 5px 5px 10px gray;
 				}
 				.iname{
-					font-size: 40px;
+					font-size: 60px;
 					margin-left: 100px;
 					margin-bottom: 50px;
 				}
@@ -289,8 +289,8 @@
 			top:330px;
 			cursor:pointer;
 			color:white;
-			font-size:25px;
-			font-family: "Showcard Gothic";
+			font-size:40px;
+			font-family: 'Bangers', cursive;
 			background-color: #ff4f4f;
       z-index: 1;
 
@@ -370,10 +370,8 @@
 		    grid-template-columns: auto auto auto;
 				grid-column-gap: 10px;
 
-
-
 		}
-		#skillbtns p{
+		#skillbtns button{
 			display:none;
 			height:60px;
 			width:120px;
@@ -381,18 +379,19 @@
 			background-color: #00b235;
 			cursor:pointer;
 			text-align:center;
-			padding: 10px 5px;
-			font-size: 23px;
-			font-family:"Showcard Gothic";
+			padding: 5px 5px;
+			font-size: 25px;
+			font-family: 'Bangers', cursive;
+			border:none;
 		}
-		#skillbtns p:hover{
+		#skillbtns button:hover{
 			box-shadow: 5px 5px 10px lightgray;
 			background-color: #007c25;
 		}
 		#skillcancel:hover{
 			box-shadow: 5px 5px 10px gray;
 		}
-		#skillbtns p:active{
+		#skillbtns button:active{
 			transform: translateY(4px);
 			box-shadow: 2px 2px 10px gray;
 		}
@@ -404,9 +403,9 @@
 			color:white;
 			background-color: #00b235;
 			text-align: center;
-			font-size:25px;
+			font-size:30px;
 			cursor:pointer;
-			font-family:"Showcard Gothic";
+			font-family: 'Bangers', cursive;
 
 		}
 		#nextturn:hover{

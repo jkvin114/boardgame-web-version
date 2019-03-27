@@ -19,7 +19,7 @@ function isAttackableCoordinate(c)
 }
 function notThisTurn(turn)
 {
-  return players.filter((a) => turn!==a.turn)
+  return players.filter((a) => turn!==a.turn&&!a.dead)
 }
 function player(turn,AI,char)
 {
@@ -30,6 +30,7 @@ function player(turn,AI,char)
     this.team=true   //true when readteam
     this.pos=0
     this.lastpos=0
+    this.dead=false
     this.level=3;
     this.money=0;
     this.kill=0
@@ -42,7 +43,7 @@ function player(turn,AI,char)
 
     this.HP=200;
     this.MaxHP=200;
-    this.AD=0;
+    this.AD=1000;
     this.AP=0;
     this.AR=0;
     this.MR=0;
@@ -98,13 +99,22 @@ function player(turn,AI,char)
       this.skilleffects=this.skilleffects.map(function(x){return [decrement(x[0]),x[1]]})
       this.damagedby=this.damagedby.map(decrement)
     }
-
+    this.checkMuststop=function(dice)
+    {
+      for(let m of muststop)
+      {
+        if(this.pos<m&&this.pos+dice>m)
+          return m-this.pos
+      }
+      return dice
+    }
 
     this.move=function(di)
     {
-      this.giveAdmg()
+      this.giveAdmg
+      di=this.checkMuststop(di)
       var end=movePlayer(di,1,this.pos)
-      if(end||this.pos+1>=finishPos) {return true}
+      if(this.pos+di>=finishPos) {return true}
 
       this.lastpos=this.pos
       this.pos+=di;
@@ -122,7 +132,11 @@ function player(turn,AI,char)
       levitatePlayer(t)
 
       setTimeout(function(){tpPlayer(t,pos)},700)
-      if(obs){setTimeout(() => this.obstacle(1),1200)}
+      if(obs){setTimeout(() => {
+        this.checkProjectile()
+        this.obstacle(1)
+        },1200
+      )}
       this.lastpos=this.pos
       this.pos=pos;
     }
@@ -409,24 +423,52 @@ function player(turn,AI,char)
 
       if(this.HP<=0)
       {
-        this.HP=0
-        this.changehealth(this.MaxHP,0)
-        this.death+=1
-        died=true
-
-        this.effects.map(function(x){return 0;})
-        this.duration.map(function(x){return 0;})
-        this.invulnerable=true
+        this.die()
         if(skillfrom>=0)
         {
           players[skillfrom].addKill()
           var assists=this.assist()
         }
+        return true
       }
-      return died
+      return false
 
 
     }
+    this.die=function()
+    {
+      this.HP=0
+      this.dead=true
+
+      this.death+=1
+      died=true
+
+      this.effects.map(function(x){return 0;})
+      this.duration.map(function(x){return 0;})
+      this.invulnerable=true
+      this.stun=false
+      this.pos=this.respawnPoint()
+      playerDie(this.turn)
+    }
+
+
+    this.respawnPoint=function()
+    {
+      for(let i=respawn.length-1;i>=0;--i)
+      {
+        if(this.pos>=respawn[i]){return respawn[i]}
+      }
+    }
+
+
+    this.respawn=function()
+    {
+      this.changehealth(this.MaxHP,0)
+      this.dead=false
+      playerRespawn(this.turn)
+    }
+
+
     this.mergeDamage=function(Pdamage,Mdamage,arP,MP)
     {
       var totaldamage = 0
@@ -492,7 +534,7 @@ function player(turn,AI,char)
       var targets=[]
       for(var p of players){
 
-        if(Math.abs(this.pos-p.pos)<=range&&!this.isSameTeam(p))
+        if(Math.abs(this.pos-p.pos)<=range&&!this.isSameTeam(p)&&!p.invulnerable)
           {targets.push(p)}
 
       }
@@ -531,7 +573,9 @@ function player(turn,AI,char)
         if(o.projectile.activated&&o.projectile.scope.indexOf(this.pos)!==-1)
         {
           this.skillHit(o.projectile.damage,this.turn,o.projectile.skill)
-          o.projectile.action.bind(this)()
+          if(!this.dead){
+            o.projectile.action.bind(this)()
+          }
           o.projectile.reset()
         }
       }
