@@ -175,8 +175,7 @@
 				.iname{
 					font-size: 60px;
 					margin-left: 100px;
-					margin-bottom: 50px;
-					vertical-align: middle;
+					line-height:120px;
 				}
 				.iselection,.ai{
 					background-color: white;
@@ -197,7 +196,7 @@
 					cursor:pointer;
 					margin-left: 100px;
 					margin-top:50px;
-					line-height: 110px;
+					line-height: 120px;
 					font-family:"showcard Gothic";
 
 				}
@@ -218,59 +217,55 @@
     {
         display: none;
     }
-    #boardside{
 
+    #boardside{
         float: bottom;
-        height:100%;
-        overflow:auto;
-        cursor:grab;
     }
     #uiside,.ui{
-
 				float:top;
         overflow:auto;
 				background-color: white;
 				border: 7px solid lightgray;
     }
 		.lowerui{
-			float:bottom;
+			float:top;
+			z-index:2;
+			position:absolute;
+			bottom: 0%;
 		}
-
-
-    #board{
-      width:100%;
-      height:100%;
-
+		#canvas-container{
+			overflow:hidden;
+			height:80%;
+		}
+		#board{
+			position:relative;
+			overflow:auto;
       float:right;
-      overflow:visible;
+
       transform-origin: 0% 0%
     }
 
     #boardside > button{
       position:absolute;
-
-
       cursor:pointer;
-
       color:white;
-      z-index: 1;
     }
-    .enlarge
+    .zoomin
     {
 			position:absolute;
-			left:1%;
-      top:10%;
+			left:10px;
+      top:100px;
 			width:60px;
 			height:60px;
 			background-color: white;
 			color:black;
 			font-size: 30px;
     }
-    .shrink
+    .zoomout
     {
 			position:absolute;
-			left:1%;
-      top:20%;
+			left:10px;
+      top:200px;
 			width:60px;
 			height:60px;
 			font-size: 30px;
@@ -420,6 +415,18 @@
 			box-shadow: 5px 5px 10px gray;
 			background-color: #b59b30;
 		}
+		.overlay{
+		  position: fixed;
+		  display: block;
+		  width: 100%;
+		  height: 100%;
+		  top: 0;
+		  left: 0;
+		  right: 0;
+		  bottom: 0;
+		  background-color: rgba(0,0,0,0.8);
+		  z-index: 2;
+		}
 		#store{
 			z-index:2;
 			background-color: white;
@@ -430,11 +437,82 @@
 			position:absolute;
 			border:5px solid gray;
 			box-shadow: 5px 5px 10px gray;
+			overflow:scroll;
 		}
+		#store h1{
+			font-size:100px;
+			text-align:center;
+		}
+		#store nav{
+			width:100%;
+			z-index: 3;
+			top:0;
+			position:sticky;
+			list-style-type: none;
+		}
+		.storemenu{
+
+			border:none;
+			color: white;
+			height:70px;
+			font-size:30px;
+			line-height: 30px;
+			cursor:pointer;
+			margin-left: 20px;
+			margin-right: 20px;
+		}
+		.storemenu a{
+			width:100%;
+		}
+		.buylist a{
+			cursor:pointer;
+			font-size:20px;
+		}
+		.buylist{
+			position: sticky;
+			top:70px;
+			box-shadow: 5px 5px 10px gray;
+		}
+
 		#storeclose{
 			float:right;
-			size:40px;
 			border:none;
-			background-color: red;
-			font-family: "Showcard Gothic"
+			font-family:"Showcard Gothic"
+		}
+		#storeclose:hover{
+		color: red;
+		}
+		#myitem{
+			display: none;
+			position:sticky;
+			top:70px;
+			box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+			z-index:5;
+			margin: 10px 10px;
+
+
+			background-color: white;
+		}
+		#myitem p{
+			background-color: white;
+			color:black;
+			display: block;
+
+		}
+		#buyAD p{
+			font-size: 200px;
+		}
+
+		.myitem:hover #myitem{
+			display:block;
+		}
+
+		.item{
+			border: 2px solid gray;
+			padding: 10px 10px;
+			width:50px;
+			height:50px;
+			position:relative;
+			margin: 10px 10px;
+			display: block;
 		}
