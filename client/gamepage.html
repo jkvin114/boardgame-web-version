@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<!-- Popper JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/2.4.6/fabric.min.js"></script>
+<script type="text/javascript" src="https://cdn.rawgit.com/asvd/dragscroll/master/dragscroll.js"></script>
+
+<!--<link rel="stylesheet" type="text/css" href="stlye/style.css">-->
+<style>
+body
+{
+    /* background: linear-gradient(to bottom, rgba(248,255,232,1) 0%,
+    rgba(227,245,171,1) 61%,rgba(193,219,100,1) 100%); */
+    font-family: 'Bangers', cursive;
+    background-color: #f2f2f2;
+}
+html,body{
+  height:100%;
+}
+
+#Mainpage > h3{
+  color: #1f842a;
+  font-size:100px;
+  text-align: center;
+}
+#Mainpage > h4{
+  color: #1f842a;
+  font-size:70px;
+  text-align: center;
+}
+.mainbtn{
+  width:300px;
+  color:white;
+  background-color: #00b235;
+  cursor:pointer;
+  text-align:center;
+  padding: 10px 5px;
+  font-size: 60px;
+  margin: 50px auto;
+  border:none;
+  vertical-align: middle;
+  font-family: 'Bangers', cursive;
+}
+#mainbtncontainer{
+  display:grid;
+  grid-template-columns:auto auto;
+}
+#individual{
+  float:right;
+}
+#team{
+  float:right;
+}
+#numselectionbtn{
+  float:left;
+  display:block;
+}
+#numselection{
+  display:grid;
+  grid-template-columns: auto auto;
+  position: absolute;
+
+}
+#numselection:hover .dropdown{
+  display:block;
+
+}
+#dropdown{
+  display:grid;
+  grid-template-columns: auto auto auto auto;
+}
+.dropdown{
+  display:none;
+  float:left;
+  z-index: 1;
+  background-color: white;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  color:lightgray;
+  margin: 0px 0px;
+  height:140px;
+  width:300px;
+  cursor:pointer;
+  text-align:center;
+  padding: 10px 5px;
+  font-size: 60px;
+}
+.dropdown:hover{
+    color:gray;
+    background-color: lightgray;
+}
+#individual:hover,#team:hover ,#numselectionbtn:hover{
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  background-color: #007c25;
+}
+
+#playbtn{
+    background-color: palegreen;
+    font-size: 4vw;
+    color:black;
+    display: inline-block;
+    padding: 2vw 5vw;
+    border-radius: 10%;
+
+
+
+}
+#Selectpage >h2{
+  font-size: 50px;
+  text-align: center;
+}
+#choicecontainer{
+    display: grid;
+    grid-template-columns: auto auto;
+    background-color: white;
+
+    }
+    #choicecontainer div{
+        border: 3px solid lightgray;
+        padding: 15px;
+        font-size: 25px;
+        text-align: center;
+    }
+    .container{
+      display: block;
+      position: relative;
+      padding: 35px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      font-size:50px;
+    }
+    .container input{
+      opacity:0;
+      cursor:pointer;
+    }
+    .checkmark{
+      position: absolute;
+      top:20%;
+      left:60%;
+      height:60px;
+      width:60px;
+
+    }
+    .red{
+        background-color: #ff8484;
+    }
+    .blue{
+      background-color: #aad6ff;
+    }
+    .container input:checked ~ img{
+      z-index:1;
+      display:block;
+    }
+    .check{
+      position: absolute;
+      top:20%;
+      left:60%;
+      height:60px;
+      width:60px;
+    }
+
+    #TeamCheckpage{
+      display: grid;
+      grid-template-columns: 40% 20% 40%;
+    }
+    #redteam{
+        display: block;
+        background-color:lightcoral;
+
+
+    }
+    #blueteam{
+        display: block;
+        background-color:cornflowerblue;
+
+    }
+    #TeamCheckpage h1{
+        text-align:center
+    }
+    .confirm:hover{
+      background-color: #007c25;
+      box-shadow: 5px 5px 10px gray;
+    }
+    .iname{
+      font-size: 60px;
+      margin-left: 100px;
+      line-height:120px;
+    }
+    .playercard,.aicard{
+      background-color: white;
+      border:2px solid lightgray;
+      margin:20px;
+      width:50%;
+
+    }
+    .addai{
+      display:block;
+      background-color: white;
+      color:lightgray;
+      font-size:100px;
+      border-radius: 50%;
+      width:120px;
+      height:120px;
+      border:none;
+      cursor:pointer;
+      margin-left: 100px;
+      margin-top:50px;
+      line-height: 120px;
+      font-family:"showcard Gothic";
+
+    }
+    .addai:hover{
+      background-color: lightgray;
+      color:gray;
+    }
+
+
+
+#Gamepage{
+  background: #f2f2f2; /* Old browsers */
+}
+
+.hidden
+{
+    display: none;
+}
+
+#boardside{
+    float: right;
+}
+.ui{
+  overflow:hidden;
+  background-color: white;
+  border: 7px solid lightgray;
+  width:100%;
+}
+.myui{
+    float:top;
+    height:220px;
+    overflow:hidden;
+}
+
+#canvas-container{
+  border: 5px solid black;
+  overflow:auto;
+  height:80%;
+}
+#board{
+  position:relative;
+  overflow:hidden;
+  float:right;
+
+  transform-origin: 0% 0%
+}
+
+#boardside > button{
+  cursor:pointer;
+  color:white;
+}
+.zoomin
+{
+  position:relative;
+
+  width:60px;
+  height:60px;
+  background-color: white;
+  color:black;
+  font-size: 30px;
+  float:right;
+  font-family: Arial;
+}
+.zoomout
+{
+  position:relative;
+  float:right;
+  width:60px;
+  height:60px;
+  font-size: 30px;
+  background-color: white;
+  color:black;
+  font-family: Arial;
+}
+.mainhpcontainer{
+  overflow:auto;
+}
+
+.hpi{
+  font-size:25px;
+
+}
+.hpframe{
+    margin:10px;
+    height:30px;
+   width:1000px;
+   border: 2px solid black;
+   background-color:white;
+   position:relative;
+
+}
+.hp{
+  width:100%;
+  display:block;
+  height: 100%;
+  background: rgb(255,7,11);
+  background: repeating-linear-gradient(to right, rgba(65,211,68,1) 0px,rgba(65,211,68,1) 18px,
+  rgba(65,211,68,1) 18px,rgba(0,0,0,1) 18px,rgba(0,0,0,1) 20px);
+
+}
+
+.btncontainer{
+  display:inline-block;
+}
+.dicebtn{
+
+  width:40px;
+  height:40px;
+  float:right;
+  margin-right:20%;
+  display:none;
+}
+
+#dicebtn{
+  cursor:pointer;
+  width:60px;
+  height:60px;
+}
+#nodicebtn{
+  cursor:pointer;
+  width:60px;
+  height:60px;
+  float:right;
+  margin-right:20%;
+}
+#dicebtn:hover{
+  transform:scale(1.1);
+}
+.cancelbtn{
+  padding:15px;
+  cursor:pointer;
+  color:white;
+  font-size:25px;
+  font-family: 'Bangers', cursive;
+  background-color: #ff4f4f;
+  border:none;
+
+}
+.skillbtn{
+  /* display:none; */
+  height:60px;
+  width:120px;
+  color:white;
+  background-color: #00b235;
+  cursor:pointer;
+  text-align:center;
+  padding: 5px 5px;
+  font-size: 25px;
+  font-family: 'Bangers', cursive;
+  border:none;
+  margin: 5px 10px;
+}
+.skillbtn:hover{
+  box-shadow: 5px 5px 10px lightgray;
+  background-color: #007c25;
+}
+#skillcancel:hover{
+  box-shadow: 5px 5px 10px gray;
+}
+.skillbtn:active{
+  transform: translateY(4px);
+  box-shadow: 2px 2px 10px gray;
+}
+#nextturn{
+  width:150px;
+  height:50px;
+  float:right;
+  margin:20px;
+  margin-right:5%;
+
+  color:white;
+  background-color: #00b235;
+  border:none;
+  text-align: center;
+  font-size:25px;
+  cursor:pointer;
+  font-family: 'Bangers', cursive;
+
+}
+#nextturn:hover{
+  background-color: #007c25;
+  box-shadow: 5px 5px 10px lightgray;
+
+}
+.infobtn{
+  cursor:pointer;
+}
+.infobtn:hover{
+  text-decoration: underline;
+}
+.storebtn{
+  height:70px;
+  width:150px;
+  color:black;
+  background-color: #f4d142;
+  cursor:pointer;
+  text-align:center;
+  padding: 5px 5px;
+  font-size: 25px;
+  font-family: 'Bangers', cursive;
+  border:none;
+  margin: 5px 10px;
+}
+
+.otherui{
+  display:block;
+  height:150px;
+}
+.otherhpframe{
+  transform-origin: left;
+  transform:scale(0.5);
+  float:left;
+  z-index:1;
+
+}
+.progress{
+  margin-left: 10px;
+  margin-right:10px;
+}
+/* .otherhp{
+  background: repeating-linear-gradient(to right, rgba(65,211,68,1) 0px,rgba(65,211,68,1) 9px,
+  rgba(65,211,68,1) 9px,rgba(0,0,0,1) 9px,rgba(0,0,0,1) 10px);
+} */
+
+/*
+
+.storebtn:hover{
+  box-shadow: 5px 5px 10px gray;
+  background-color: #b59b30;
+}
+.overlay{
+  position: fixed;
+  display: block;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.8);
+  z-index: 2;
+}
+#store{
+  z-index:2;
+  background-color: white;
+  top:10%;
+  left:10%;
+  width:80%;
+  height:80%;
+  position:absolute;
+  border:5px solid gray;
+  box-shadow: 5px 5px 10px gray;
+  overflow:scroll;
+}
+#store h1{
+  font-size:100px;
+  text-align:center;
+}
+#store nav{
+  width:100%;
+  z-index: 3;
+  top:0;
+  position:sticky;
+  list-style-type: none;
+}
+.storemenu{
+
+  border:none;
+  color: white;
+  height:70px;
+  font-size:30px;
+  line-height: 30px;
+  cursor:pointer;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+.storemenu a{
+  width:100%;
+}
+.buylist a{
+  cursor:pointer;
+  font-size:20px;
+}
+.buylist{
+  position: sticky;
+  top:70px;
+  box-shadow: 5px 5px 10px gray;
+}
+
+#storeclose{
+  float:right;
+  border:none;
+  font-family:"Showcard Gothic"
+}
+#storeclose:hover{
+color: red;
+}
+#myitem{
+  display: none;
+  position:sticky;
+  top:70px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index:5;
+  margin: 10px 10px;
+
+
+  background-color: white;
+}
+#myitem p{
+  background-color: white;
+  color:black;
+  display: block;
+
+}
+#buyAD p{
+  font-size: 200px;
+}
+
+.myitem:hover #myitem{
+  display:block;
+}
+
+.item{
+  border: 2px solid gray;
+  padding: 10px 10px;
+  width:50px;
+  height:50px;
+  position:relative;
+  margin: 10px 10px;
+  display: block;
+}
+*/
+</style>
+
+<link href="https://fonts.googleapis.com/css?family=Bangers" rel="stylesheet">
+<head>
+    <meta charset="utf-8" />
+</head>
+<body>
+
+
+
+<!-- <div id="TeamCheckpage" class="hidden">
+
+    <div id=redteam>
+      <h1 style={"font-size:30px","text-align":"center"}> RED TEAM </h1>
+    </div>
+    <h1 style="margin-top:300px"> VS </h1>
+    <div id=blueteam>
+      <h1 style={"font-size:30px","text-align":"center"}> BLUE TEAM </h1>
+    </div>
+    <a class="confirm mainbtn"> Game Start </a>
+</div> -->
+<div id="Gamepage" class="container-fluid">
+	<div class="row myui ui no-gutters">
+    <div class="col">
+      <div class="row">
+        <p class="hpi col-lg-2"> P 200/200 </p>
+        <div class=" col-lg-10 mainhpcontainer">
+          <div class="hpframe">
+      			<span class="hp">
+      			</span>
+      		</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-2">
+          <a class=" infobtn" data-placement="top"  data-toggle="popover" title="Status" data-content="Some content inside the popover">[see status]</a>
+          <a class=" infobtn" data-placement="left"  data-toggle="popover" title="Skill Explanation" data-content="Some content inside the popover">[see skills]</a>
+        </div>
+
+        <div class="col-lg-10 btncontainer">
+
+            <button class="skillbtn hidden" value=1> Lv1 Skill</button>
+      			<button class="skillbtn hidden" value=2> Lv2 Skill </button>
+      			<button class="skillbtn hidden" value=3> Lv3 Skill</button>
+            <img class="noskill hidden" src="dice\silent.png"></img>
+            <button class=" storebtn hidden"> Buy Items</button>
+            <button id="skillcancel" class="hidden cancelbtn"> Cancel </button>
+            <button id="projectilecancel" class=" hidden cancelbtn"> Cancel </button>
+            <img id="dicebtn" class="hidden dicebtn" src="dice\1.png">
+            <img id="nodicebtn" class="hidden" src="dice\stun.png">
+            <button id="nextturn" class="hidden"> Next Turn </button>
+
+    		</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row flex-column-reverse flex-lg-row">
+      <div class="col-lg-4 ">
+
+        <div class="row" z-index=1>
+          <div class="col" style={display:inline;}>
+            <button class='zoomin'> + </button>
+            <button class='zoomout'> - </button>
+          </div>
+        </div>
+        <div class="row ui otherui">
+          <p class="hpi otherhpi"> P 200/200 </p>
+          <div style={display:inline-block;}>
+            <img class=" dicebtn" src="dice\1.png">
+            <a class=" infobtn" data-placement="top"  data-toggle="popover" title="Status" data-content="Some content inside the popover">[see status]</a>
+            <a class="status">  </a>
+          </div>
+          <div class="hpframe otherhpframe">
+        		<span class="hp otherhp">
+        		</span>
+        	</div>
+        </div>
+        <div class="row ui hidden otherui">
+          <p class="hpi otherhpi"> P 200/200 </p>
+          <div style={display:inline-block;}>
+            <img class=" dicebtn" src="dice\1.png">
+            <a class=" infobtn" data-placement="top"  data-toggle="popover" title="Status" data-content="Some content inside the popover">[see status]</a>
+            <a class="status">  </a>
+          </div>
+          <div class="hpframe otherhpframe">
+        		<span class="hp otherhp">
+        		</span>
+        	</div>
+        </div>
+        <div class="row ui hidden otherui">
+          <p class="hpi otherhpi"> P 200/200 </p>
+          <div style={display:inline-block;}>
+            <img class=" dicebtn" src="dice\1.png">
+            <a class=" infobtn" data-placement="top"  data-toggle="popover" title="Status" data-content="Some content inside the popover">[see status]</a>
+            <a class="status">  </a>
+          </div>
+          <div class="hpframe otherhpframe">
+        		<span class="hp otherhp">
+        		</span>
+        	</div>
+        </div>
+      </div>
+      <div id="boardside" class=" col-lg-8 ">
+        <div class="progress row">
+          <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" style="width:0%"></div>
+        </div>
+          <div id="canvas-container" class="dragscroll" width="1000" height="720" z-index=1>
+            <canvas id="board" width="1320" height="720" z-index=-1>
+            </canvas>
+          </div>
+      </div>
+
+    </div>
+
+<!--
+</div>
+<div class="overlay hidden">
+</div>
+<div id="store" class="container-fluid hidden">
+  <button id="storeclose"> x </button>
+  <h1>Store Player1</h1>
+  <nav class="navbar bg-dark navbar-dark navbar-expand-sm">
+    <ul class="navbar-nav">
+      <li class="home nav-item storemenu"><a class="nav-link">Home</a></li>
+      <li class="nav-item buy storemenu"
+      data-toggle="collapse" data-target=".collapse"><a class="nav-link">Buy</a></li>
+      <li class=" nav-itemsell storemenu"><a class="nav-link">Sell</a></li>
+      <li class=" nav-item myitem storemenu"><a class="nav-link">My Item</a></li>
+      <li id="storeclose" class="storemenu"><a class="nav-link">Exit</a></li>
+
+    </ul>
+
+  </nav>
+  <div class="collapse navbar-collapse buylist">
+    <ul class="navbar-nav buymenu ">
+      <li class="nav-item"><a class="nav-link"> Attack Item</a></li>
+      <li class="nav-item"><a class="nav-link"> Magic Item</a></li>
+      <li class="nav-item"><a class="nav-link"> Defence Item</a></li>
+      <li class="nav-item"><a class="nav-link"> Health Item</a></li>
+      <li class="nav-item"><a class="nav-link"> Special Item</a></li>
+    </ul>
+  </div>
+
+
+
+
+
+
+  <ul>
+    <li class="active storemenu home"><a>Home</a></li>
+    <li class="storemenu buy">
+      <a>Buy</a>
+    </li>
+    <li class="storemenu sell"><a>Sell</a></li>
+    <li class="storemenu myitem">
+      <a>My Items</a>
+      <div id="myitem">
+        <p> myitem</p>
+        <div class="row">
+          <div class="item col"></div>
+          <div class="item col"></div>
+          <div class="item col"></div>
+          <div class="item col"></div>
+          <div class="item col"></div>
+        </div>
+      </div>
+    </li>
+  </ul>
+
+  <div id="home">
+    <p> home</p>
+  </div>
+  <div id="buy">
+    <div id="buyAD" class="container hidden">
+      <p>AD item </p>
+      <p>AD item </p>
+      <p>AD item </p>
+      <p>AD item </p>
+      <p>AD item </p>
+      <p>AD item </p>
+      <p>AD item </p>
+      <p>AD item </p>
+      <p>AD item </p>
+      <p>AD item </p>
+      <p>AD item </p>
+    </div>
+    <div id="buyAP" class="container hidden">
+      <p>AP item </p>
+    </div>
+    <div id="buyDefense" class="container hidden">
+      <p>d item </p>
+    </div>
+    <div id="buyHP" class="container hidden">
+      <p> item </p>
+    </div>
+    <div id="buySpecial" class="container hidden">
+      <p>s item </p>
+    </div>
+  </div>
+
+  <div id="sell" class="hidden">
+    <p> sell</p>
+  </div>
+ -->
+
+</div>
+<style>
+
+</style>
+</body>
+
+
+
+<img class="hidden" src='emptyboard.png' id="boardimg" z-index="-1">
+<img class="hidden" src='shadow.png' id="shadow">
+<img class="hidden" src='boardtile/select.png' id="tileselect">
+<img class="hidden" src='character/combat.png' id="playerimg1" z-index="1">
+<img class="hidden" src='character/death.png' id="playerimg2" z-index="1">
+<img class="hidden" src='character/ghost.png' id="playerimg3" z-index="1">
+<img class="hidden" src='character/ninja.png' id="playerimg4" z-index="1">
+<img class="hidden" src='target.png' id="targetimg" z-index="1">
+<div id="tilewrapper" class="hidden">
+  <img src="boardtile/green.png">
+  <img src="boardtile/lime.png">
+  <img src="boardtile/lightblue.png">
+  <img src="boardtile/blue.png">
+  <img src="boardtile/purple.png">
+  <img src="boardtile/yellow.png">
+  <img src="boardtile/orange.png">
+  <img src="boardtile/gold.png">
+  <img src="boardtile/red.png">
+  <img src="boardtile/darkpurple.png">
+</div>
+
+<div id="obswrapper" class="hidden">
+  <img src='obstacle/0.png'>
+  <img src='obstacle/1.png'>
+  <img src='obstacle/2.png'>
+  <img src='obstacle/3.png'>
+  <img src='obstacle/4.png'>
+  <img src='obstacle/5.png'>
+  <img src='obstacle/6.png'>
+  <img src='obstacle/7.png'>
+  <img src='obstacle/8.png'>
+  <img src='obstacle/9.png'>
+  <img src='obstacle/10.png'>
+  <img src='obstacle/11.png'>
+  <img src='obstacle/12.png'>
+  <img src='obstacle/13.png'>
+  <img src='obstacle/14.png'>
+  <img src='obstacle/15.png'>
+  <img src='obstacle/16.png'>
+  <img src='obstacle/17.png'>
+  <img src='obstacle/18.png'>
+  <img src='obstacle/19.png'>
+  <img src='obstacle/20.png'>
+  <img src='obstacle/21.png'>
+  <img src='obstacle/22.png'>
+  <img src='obstacle/23.png'>
+  <img src='obstacle/24.png'>
+  <img src='obstacle/25.png'>
+  <img src='obstacle/26.png'>
+  <img src='obstacle/27.png'>
+  <img src='obstacle/28.png'>
+  <img src='obstacle/29.png'>
+  <img src='obstacle/30.png'>
+  <img src='obstacle/31.png'>
+  <img src='obstacle/32.png'>
+  <img src='obstacle/33.png'>
+  <img src='obstacle/34.png'>
+  <img src='obstacle/35.png'>
+  <img src='obstacle/36.png'>
+  <img src='obstacle/37.png'>
+</div>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+<script src="gameclient.js"></script>
+<script src="script.js"></script>
+<script src="canvas_control.js"></script>
+
+
+
+
+</html>

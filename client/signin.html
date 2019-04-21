@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet"><head>
+  <link href="https://fonts.googleapis.com/css?family=Sigmar+One" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Baloo+Paaji" rel="stylesheet">
+<meta charset="utf-8" >
+<style>
+body{
+  font-family: 'Lato', sans-serif;
+  background-color:#f4f4f4;
+}
+form{
+  text-align:center;
+}
+form > button{
+  width:300px;
+  color:white;
+  background-color: #00b235;
+  cursor:pointer;
+  text-align:center;
+  padding: 10px 5px;
+  font-size: 30px;
+  margin: 50px;
+  border:none;
+  vertical-align: middle;
+  font-family: 'Bangers', cursive;
+  border-radius: 5px;
+}
+form > input{
+  font-size:30px;
+}
+form > button:hover{
+  background-color: #007c25;
+}
+#signupbtn{
+  width:100px;
+  background-color:#f4c816;
+  cursor:pointer;
+  text-align:center;
+  padding: 10px 5px;
+  font-size: 15px;
+  margin: 30px;
+  border:none;
+  vertical-align: middle;
+
+}
+#signupbtn:hover{
+
+  background-color:#ba9810;
+}
+#price{
+  font-size:40px;
+font-family: 'Baloo Paaji', cursive;
+color:#59e082;
+}
+div{
+  display:none;
+  width:50%;
+  background-color:white;
+  border:2px solid gray;
+  box-shadow: 5px 5px 5px gray;
+}
+#forgotpw{
+  cursor:pointer;
+  text-style:underline;
+}
+#close{
+  border:none;
+  background:white;
+  width:30px;
+  height:30px;
+  font-size:20px;
+  line-height:30px;
+  top:0;
+  float:right;
+  display:block;
+  cursor:pointer;
+
+}
+#close:hover{
+  background:red;
+}
+
+
+
+</style>
+
+<body>
+  <form method="post" action="/signin">
+    <p> Username</p>
+    <input type="text" name="id"><br>
+    <p> Password</p>
+    <input type="password" name="pw"><br>
+    <a id="forgotpw"> Forgot password?</a>
+    <p> </p>
+    <div id="signup">
+      <a id="close">X</a>
+      Sign up again for discount price!
+      <p style="text-decoration:line-through"> $1,299.99 USD -></p>
+      <a id="price">  $999.99 USD</a>
+    <a href="signup.html" id="signupbtn">
+      Sign up now!
+    </a>
+    </div>
+    <button type="submit">Login</button>
+  </form>
+
+
+</body>
+<script>
+  var forgotpw=document.getElementById("forgotpw")
+  var up=document.getElementById("signup")
+  forgotpw.addEventListener('click',function(){
+      up.style.display="block"
+
+  })
+  var close=document.getElementById("close")
+  close.addEventListener('click',function(){
+      up.style.display="none"
+
+  })
+
+</script>
+</html>

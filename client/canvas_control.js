@@ -1,21 +1,52 @@
-const sizes=[0.8,1,1.2,1.4,1.6,1.8]
-var cursize=2
-var canvas=new fabric.Canvas("board")
-$(".zoomin").click(function(){
-    cursize=Math.min(sizes.length-1,cursize+=1)
-    canvas.setZoom(sizes[cursize])
-  // $("#board").css("transform","scale("+String(sizes[cursize])+")")
-    canvas.setWidth(1320*sizes[cursize])
-    canvas.setHeight(720*sizes[cursize])
-})
+var canvas=null
+const sizes=[0.5,0.6,0.8,1,1.2,1.4,1.6,1.8]
+var cursize=3
+var dmgindicator=[]
+var moneyindicator=[]
+var effectindicator=[]
+var activetiles=[]
+var playerimgs=[]
+var targetimgs=[]
+var skilldmg=-1
+var skillcount=0
+var godhandtarget=-1
+const diff=[[6,7],[4,-7],[-15,7],[-17,-7]]
+var tiles=[]
+var tilehover=null
+var obsimglist=null
+var tilelist=null
+var shadow=null
+$(document).ready(function(e){
 
-$(".zoomout").click(function(){
-   cursize=Math.max(0,cursize-=1)
-   canvas.setZoom(sizes[cursize])
-//  $("#board").css("transform","scale("+String(sizes[cursize])+")")
-canvas.setWidth(1320*sizes[cursize])
-canvas.setHeight(720*sizes[cursize])
+  console.log("board")
+  obsimglist=document.getElementById("obswrapper").children
+  tilelist=document.getElementById("tilewrapper").children
+  shadow=new fabric.Image(document.getElementById("shadow"),{
+      left:0,top:0,
+      lockMovementX: true, lockMovementY: true,visible:false,
+      hasControls: false,hasBorders:false,evented:false,
+      lockScalingX: true, lockScalingY:true,lockRotation: true,
+  })
 
+  canvas=new fabric.Canvas("board")
+  $(".zoomin").click(function(){
+      cursize=Math.min(sizes.length-1,cursize+=1)
+      canvas.setZoom(sizes[cursize])
+    // $("#board").css("transform","scale("+String(sizes[cursize])+")")
+      canvas.setWidth(1320*sizes[cursize])
+      canvas.setHeight(720*sizes[cursize])
+  })
+
+  $(".zoomout").click(function(){
+     cursize=Math.max(0,cursize-=1)
+     canvas.setZoom(sizes[cursize])
+  //  $("#board").css("transform","scale("+String(sizes[cursize])+")")
+  canvas.setWidth(1320*sizes[cursize])
+  canvas.setHeight(720*sizes[cursize])
+
+  })
+
+//  sethpframe()
 })
 // canvas.on('mouse:move', function(opt) {
 //   if(this.isDragging)
@@ -30,6 +61,39 @@ canvas.setHeight(720*sizes[cursize])
 //
 // });
 
+function playersToFront()
+{
+  for(var p of playerimgs)
+  {
+    p.bringToFront()
+  }
+  canvas.renderAll()
+}
+function chooseTile(index)
+{
+  let tile=0
+  if(index>0&&index<16)
+  {
+    tile=index%2
+  }
+  else if(index>16&&index<38)
+  {
+    tile=2+(index%3)
+  }
+  else if(index>38&&index<54)
+  {
+    tile=5+(index%2)
+  }
+  else if(index>=54&&index<72)
+  {
+    tile=7
+  }
+  else if(index>72)
+  {
+    tile=8+(index%2)
+  }
+  return tile
+}
 
 function drawboard()
 {
@@ -78,7 +142,6 @@ function drawboard()
      canvas.add(shadow)
      shadow.bringForward()
      showObjects()
-
 }
 
 function showObjects()
@@ -92,17 +155,20 @@ function showObjects()
 
     canvas.renderAll()
 
-    for(let i=0;i<players.length;++i)
+    for(let i=0;i<game.S;++i)
     {
-      let p=new fabric.Image(document.getElementById("playerimg"),{
-          left:(coordinates[0].x+diff[i][0]),top:(coordinates[0].y+diff[i][1]),width:300,height:400,evented:false,
+      let img=document.getElementById("playerimg"+(i+1))
+
+
+      let p=new fabric.Image(img,{
+          left:(coordinates[0].x+diff[i][0]),top:(coordinates[0].y+diff[i][1]),evented:false,
       })
       lockFabricObject(p)
-      canvas.add(p.scale(0.13))
+      canvas.add(p.scale(0.1))
       p.bringToFront();
       playerimgs.push(p)
     }
-    for(let i=0;i<players.length;++i)
+    for(let i=0;i<game.S;++i)
     {
       let p=new fabric.Image(document.getElementById("targetimg"),
         {opacity:0,
@@ -171,6 +237,7 @@ function showObjects()
     alarm.set({top:150,left:500})
     canvas.add(alarm)
 
+
 }
 function lockFabricObject(obj){
   obj.set({lockMovementX: true, lockMovementY: true,
@@ -184,24 +251,30 @@ function alarm(text)
 
 }
 
-function movePlayer(dice,count,pos)
+function movePlayer(dice,count,pos,turn)
 {
-  if((pos+count)>finishPos){return true}
-  if(count>dice){return false}
+  if((pos+count)>finishPos){
+    moveComplete(true)
+    return;
+  }
+  if(count>dice){
+    moveComplete(false)
+    return;
+  }
   var x=coordinates[pos+count].x
   var y=coordinates[pos+count].y
-  playerimgs[thisturn].animate('left', (x+diff[thisturn][0]), {
+  playerimgs[turn].animate('left', (x+diff[turn][0]), {
     onChange: canvas.renderAll.bind(canvas),
     duration: 100,
     easing: fabric.util.ease.easeOutCubic
   });
-  playerimgs[thisturn].animate('top',(y+diff[thisturn][1]),{
+  playerimgs[turn].animate('top',(y+diff[turn][1]),{
     onChange: canvas.renderAll.bind(canvas),
     duration: 100,
     easing: fabric.util.ease.easeOutCubic
   });
 
-  setTimeout(function(){return movePlayer(dice,count+1,pos)},100)
+  setTimeout(function(){movePlayer(dice,count+1,pos,turn)},100)
 }
 function tpPlayer(target,pos)
 {
@@ -227,16 +300,20 @@ function levitatePlayer(target)
   setTimeout(function(){playerimgs[target].set({opacity:0})},500)
   }
 
+
+
   function animateHP(target,hp,maxhp,change)
   {
-      $(hpframe[target]).animate({
-        "width":String((maxhp*1.5))+"px"
+      let ui=game.turn2ui(target)
+      $(hpframe[ui]).animate({
+        "width":String((maxhp*2))+"px"
       },300,function(){})
 
-      $(hpspan[target]).animate({
-        "width":String(hp*1.5)+"px"
+      $(hpspan[ui]).animate({
+        "width":String(hp*2)+"px"
       },300,function(){})
-      $(hpi[target]).html(String(target+1)+"P "+String(hp)+"/"+String(maxhp))
+      let name=$(names[ui]).html().split(" ")[0]
+      $(names[ui]).html(name+" "+String(hp)+"/"+String(maxhp))
 
     var x=playerimgs[target].get('left')
     var y=playerimgs[target].get('top')
@@ -310,8 +387,10 @@ function levitatePlayer(target)
     });
 
   }
+
   function indicateEffect(target,effect,num)
   {
+    console.log(effect)
     var x=playerimgs[target].get('left')
     var y=playerimgs[target].get('top')
     var e=""
@@ -382,14 +461,13 @@ function levitatePlayer(target)
     //if(!godhand) {
     $("#skillcancel").show()
     canvas.discardActiveObject()
-    for(let t of targets)
+    for(let tr of targets)
     {
-      let tr=t.turn
       var x=playerimgs[tr].get('left')
       var y=playerimgs[tr].get('top')
       var tL= () => targetLocked(tr,godhand)
       targetimgs[tr].on('selected',tL);
-      targetimgs[tr].set({left:x,top:y,opacity:1,scaleY:2,visible:true})
+      targetimgs[tr].set({left:(x+10),top:y,opacity:1,scaleY:2,visible:true})
       targetimgs[tr].animate('scaleY',0.1,{
         onChange: canvas.renderAll.bind(canvas),
         duration: 500,
@@ -414,7 +492,6 @@ function levitatePlayer(target)
 
     }
     $("#skillcancel").hide()
-    showSkillBtn()
   }
 
   function liftTile(index,godhand)

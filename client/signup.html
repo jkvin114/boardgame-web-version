@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet"><head>
+  <link href="https://fonts.googleapis.com/css?family=Sigmar+One" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Baloo+Paaji" rel="stylesheet">
+<meta charset="utf-8" >
+<style>
+body{
+  font-family: 'Lato', sans-serif;
+  background-color:#f4f4f4;
+}
+footer{
+  background-color:#ededed;
+  border:1px solid gray;
+}
+form > input{
+  font-size:30px;
+}
+button{
+  width:100px;
+  background-color:#f4c816;
+  cursor:pointer;
+  text-align:center;
+  padding: 10px 5px;
+  font-size: 15px;
+  margin: 30px;
+  border:none;
+  vertical-align: middle;
+
+}
+button:hover{
+
+  background-color:#ba9810;
+}
+#price{
+  font-size:40px;
+font-family: 'Baloo Paaji', cursive;
+color:#59e082;
+}
+div{
+
+  width:50%;
+  background-color:white;
+  border:2px solid gray;
+  box-shadow: 5px 5px 5px gray;
+}
+
+
+
+</style>
+<body>
+  <form method="post" action="/signup">
+    <p> Username</p>
+    <input type="text" name="id"><br>
+    <p> Password</p>
+    <input type="password" name="pw"><br>
+    <p> Password Check</p>
+    <input type="password" name="pw2"><br>
+    <p> </p>
+    <div>
+      Sign up for discount price!
+      <p style="text-decoration:line-through"> $1,299.99 USD -></p>
+      <a id="price">  $999.99 USD</a>
+    <button type="submit">
+      Sign up now!
+    </button>
+    </div>
+  </form>
+
+
+</body>
+<footer>
+  <p> Sign up fee will be charged immediately to your bank account</p>
+</footer>
+</html>

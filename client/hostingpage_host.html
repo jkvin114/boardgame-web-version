@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link href="https://fonts.googleapis.com/css?family=Bangers" rel="stylesheet">
+<head>
+    <meta charset="utf-8" />
+</head>
+<style>
+  html{
+    zoom:80%;
+  }
+  body
+  {
+      /* background: linear-gradient(to bottom, rgba(248,255,232,1) 0%,
+      rgba(227,245,171,1) 61%,rgba(193,219,100,1) 100%); */
+      font-family: 'Bangers', cursive;
+      background-color: #f2f2f2;
+
+  }
+  html,body{
+    height:100%;
+  }
+  .confirm:hover{
+    background-color: #007c25;
+    box-shadow: 5px 5px 10px gray;
+  }
+  .iname{
+    font-size: 60px;
+    margin-left: 100px;
+    line-height:60px;
+  }
+  .playercard,.aicard{
+    background-color: white;
+    border:2px solid red;
+    margin:20px;
+    width:80%;
+
+  }
+  .aicard{
+    border:4px solid green;
+  }
+  .addai{
+    display:block;
+    background-color: white;
+    color:lightgray;
+    font-size:100px;
+    border-radius: 50%;
+    width:120px;
+    height:120px;
+    border:none;
+    cursor:pointer;
+    margin-left: 100px;
+    margin-top:50px;
+    line-height: 120px;
+    font-family:"showcard Gothic";
+
+  }
+  .addai:hover{
+    background-color: lightgray;
+    color:gray;
+  }
+  .connected{
+    border:4px solid lightblue;
+  }
+  .me{
+    border:7px solid blue;
+  }
+  .kick,.kick_player{
+    border:none;
+    background:pink;
+    width:30px;
+    height:30px;
+    font-size:20px;
+    line-height:30px;
+    top:0;
+    float:right;
+    display:block;
+    cursor:pointer;
+  }
+
+  .mainbtn{
+    width:300px;
+    color:white;
+    background-color: #00b235;
+    cursor:pointer;
+    text-align:center;
+    padding: 10px 5px;
+    font-size: 30px;
+    margin: 50px;
+    border:none;
+    vertical-align: middle;
+    font-family: 'Bangers', cursive;
+    border-radius: 5px;
+  }
+  .hidden{
+    display:none;
+  }
+  .mainbtn:hover{
+    background-color:green;
+  }
+  .swap_player,.swap_ai{
+    width:200px;
+    color:white;
+    background-color: #00b235;
+    cursor:pointer;
+    text-align:center;
+    padding: 10px 5px;
+    font-size: 20px;
+    margin: 10px;
+    border:none;
+    vertical-align: middle;
+    font-family: 'Bangers', cursive;
+  }
+
+</style>
+<body>
+  <div id=Hostingpage>
+    <div class="playercard connected me">
+      <p class="iname">1P</p>
+    </div>
+    <div class="waiting"></div>
+
+    <div class="playercard connected hidden">
+      <button class="kick_player hidden" value=1> x </button>
+      <p class="iname"> 2P</p>
+      <p>Connected</p>
+    </div>
+    <div class="playercard waiting hidden">
+      <p class="iname">2P</p>
+      <p class="status">waiting for player...</p>
+      <button class="swap_ai">switch to AI</button>
+    </div>
+
+    <div class="playercard connected hidden">
+      <button class="kick_player hidden" value=2> x </button>
+      <p class="iname"> 3P</p>
+      <p>Connected</p>
+    </div>
+    <div class="playercard waiting hidden">
+      <p class="iname"> 3P</p>
+      <p>waiting for player...</p>
+    </div>
+
+    <div class="playercard connected hidden">
+      <button class="kick_player hidden" value=3> x </button>
+      <p class="iname">4P</p>
+      <p>Connected</p>
+    </div>
+    <div class="playercard waiting hidden">
+      <p class="iname"> 4P</p>
+      <p>waiting for player...</p>
+    </div>
+
+      <button class="addai hidden" value=0> +</button>
+      <div class="aicard hidden">
+        <p class="iname">1P(Computer)</p>
+      </div>
+      <button class="addai " value=1> +</button>
+      <div class="aicard hidden">
+        <button class="kick" value=1> x </button>
+        <p class="iname">2P(Computer)</p>
+        <button class="swap_player">switch to player</button>
+
+      </div>
+      <button class="addai " value=2> +</button>
+      <div class="aicard hidden">
+        <button class="kick" value=2> x </button>
+        <p class="iname">3P(Computer)</p>
+      </div>
+      <button class="addai " value=3> +</button>
+      <div class="aicard hidden">
+        <button class="kick" value=3> x </button>
+        <p class="iname">4P(Computer)</p>
+
+      </div>
+      <form id="mainbtncontainer" display='inline' action="/check_players">
+  			<button type='submit' id="individual" name="gamemode" value="individual" class="mainbtn">
+  	        Individual game
+  	    </button>
+  			<button type='submit' disabled=true id="team" name="gamemode" value="team" class="mainbtn">
+  	        Team game
+  	    </button>
+
+  		</form>
+
+
+  </div>
+
+
+
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+<script src="client.js"></script>
+<script src="hostingpage_button_control.js"></script>
+
+</html>
