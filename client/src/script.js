@@ -234,7 +234,7 @@ function boardReady(){
     }
     else
     {
-      $(dicebtn[game.thisui]).attr("src","dice/1.png");
+      $(dicebtn[game.thisui]).attr("src","img/dice/1.png");
       $(dicebtn[game.thisui]).show()
     }
 
@@ -244,7 +244,7 @@ function boardReady(){
 
     if(game.ismyturn)
     {
-      $("#dicebtn").attr("src","dice/stun.png");
+      $("#dicebtn").attr("src","img/dice/stun.png");
       $(".dicebtn").attr("disabled",true)
       $("#dicebtn").show()
     }
@@ -285,7 +285,7 @@ function diceAnimation(dice){
 }
 
 function setDice(dice){
-  $(dicebtn[game.thisui]).attr("src","dice/"+String(dice)+".png");
+  $(dicebtn[game.thisui]).attr("src","img/dice/"+String(dice)+".png");
 }
 
 function afterDice(dice)

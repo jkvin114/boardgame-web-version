@@ -54,8 +54,8 @@ class player
       this.nextdmg=0;
       this.adamage=0;
 
-      this.HP=500;
-      this.MaxHP=500;
+      this.HP=150;
+      this.MaxHP=150;
       this.AD=0;
       this.AP=0;
       this.AR=0;
@@ -67,9 +67,10 @@ class player
       this.shield=0;
       this.cooltime=[0,0,0]
       this.duration=[0,0,0]
+      this.stun=false
       this.effects=[0,0,0,0,0,0,0,0,0]
         //0.slow 1.speed 2.stun 3.silent 4. shield  5.poison  6.radi  7.annuity 8.slave
-      this.stun=false
+
       //this.skilleffects=[[0,-1],[0,-1]]
       //0.blind,skill user`s turn   1.mushroom[dur,skill user`s turn]
       this.stats=[0,0,0,0,0,0,0]

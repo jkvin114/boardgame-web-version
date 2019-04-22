@@ -5,8 +5,6 @@ var url=require("url")
 var path=require("path")
 var fs=require("fs")
 var mysql=require('mysql')
-var passport=require('passport')
-var LocalStrategy=require('passport-local')
 var crypto=require('crypto')
 var bodyParser = require('body-parser');
 
@@ -24,10 +22,6 @@ var con=mysql.createConnection({
 con.connect(function(e){
   if(e) throw e
   console.log("connected to mysql DB")
-  con.query("SELECT * FROM table1 WHERE id='y'",function(err,result,fields){
-    if(e) throw e
-    console.log(result)
-  })
 })
 
 //  var strategy=new LocalStrategy(function(id,password,done){
@@ -137,12 +131,6 @@ io.on('connect',function(socket){
   })
   socket.on('startGame',function(n){
     let t=game.firstTurn()
-    // let thisclient=game.clients[game.thisturn]
-    //
-    // if(thisclient==="ai"){}
-    // else{
-    //   thisclient.emit()
-    // }
     if(!t){
       console.log("connecting incomplete")
     }
@@ -247,7 +235,6 @@ app.get('/mode_selection',function(req,res,next){
 
   }
   res.end(html)
-  //io.emit('player_select',multiplayer)
 })
 
 app.get('/check_players',function(req,res){
@@ -324,7 +311,6 @@ app.post('/signup',bodyparser,function(req,res){
       })
       res.writeHead(302,{Location:'/'})
       res.end()
-      //con.query("SELECT * FROM table1",function(e,result){console.log(result)})
     }
   })
 
